@@ -1,0 +1,35 @@
+17:49:59 **** Incremental Build of configuration Debug for project nucleoF4PrintAndEEPROMTesting ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../I-CUBE-EE -I../Middlewares/Third_Party/NimaLTD_Driver/EE -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "nucleoF4PrintAndEEPROMTesting.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\jt\OneDrive\Desktop\AER\STM32_APPS\nucleoF4PrintAndEEPROMTesting\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="nucleoF4PrintAndEEPROMTesting.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: nucleoF4PrintAndEEPROMTesting.elf
+ 
+arm-none-eabi-size  nucleoF4PrintAndEEPROMTesting.elf 
+arm-none-eabi-objdump -h -S nucleoF4PrintAndEEPROMTesting.elf  > "nucleoF4PrintAndEEPROMTesting.list"
+   text	   data	    bss	    dec	    hex	filename
+  14236	    124	   2012	  16372	   3ff4	nucleoF4PrintAndEEPROMTesting.elf
+Finished building: default.size.stdout
+ 
+Finished building: nucleoF4PrintAndEEPROMTesting.list
+ 
+17:50:07 **** Incremental Build of configuration Debug for project nucleoF4PrintAndEEPROMTesting ****
+make -j16 all 
+arm-none-eabi-size  nucleoF4PrintAndEEPROMTesting.elf 
+   text	   data	    bss	    dec	    hex	filename
+  14236	    124	   2012	  16372	   3ff4	nucleoF4PrintAndEEPROMTesting.elf
+Finished building: default.size.stdout
+ 
+18:51:07 **** Incremental Build of configuration Debug for project nucleoF4PrintAndEEPROMTesting ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../I-CUBE-EE -I../Middlewares/Third_Party/NimaLTD_Driver/EE -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "nucleoF4PrintAndEEPROMTesting.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\jt\OneDrive\Desktop\AER\STM32_APPS\nucleoF4PrintAndEEPROMTesting\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="nucleoF4PrintAndEEPROMTesting.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: nucleoF4PrintAndEEPROMTesting.elf
+ 
+arm-none-eabi-size  nucleoF4PrintAndEEPROMTesting.elf 
+arm-none-eabi-objdump -h -S nucleoF4PrintAndEEPROMTesting.elf  > "nucleoF4PrintAndEEPROMTesting.list"
+   text	   data	    bss	    dec	    hex	filename
+  14236	    124	   2012	  16372	   3ff4	nucleoF4PrintAndEEPROMTesting.elf
+Finished building: default.size.stdout
+ 
+Finished building: nucleoF4PrintAndEEPROMTesting.list
+ 

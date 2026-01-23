@@ -1,0 +1,17 @@
+12:53:03 **** Incremental Build of configuration Debug for project APPS_Signal_Bound_Generator_F44Nucleo ****
+make -j16 all 
+arm-none-eabi-gcc -o "APPS_Signal_Bound_Generator_F44Nucleo.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\jt\OneDrive\Desktop\AER\STM32_APPS\APPS_Signal_Bound_Generator_F44Nucleo\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="APPS_Signal_Bound_Generator_F44Nucleo.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: ./Core/Src/main.o: in function `main':
+C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:164:(.text.main+0x36): undefined reference to `EE_init'
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:165:(.text.main+0x3a): undefined reference to `EE_read'
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:167:(.text.main+0x46): undefined reference to `EE_write'
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:223:(.text.main+0x31e): undefined reference to `EE_write'
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:224:(.text.main+0x322): undefined reference to `EE_read'
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:234:(.text.main+0x350): undefined reference to `EE_write'
+C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/Users/jt/OneDrive/Desktop/AER/STM32_APPS/APPS_Signal_Bound_Generator_F44Nucleo/Debug/../Core/Src/main.c:235:(.text.main+0x354): undefined reference to `EE_read'
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:65: APPS_Signal_Bound_Generator_F44Nucleo.elf] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+
+12:53:04 Build Failed. 8 errors, 0 warnings. (took 582ms)
+
