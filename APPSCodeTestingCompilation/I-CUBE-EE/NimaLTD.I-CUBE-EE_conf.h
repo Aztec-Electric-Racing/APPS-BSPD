@@ -35,7 +35,7 @@
 
 /**
   MiddleWare name : NimaLTD.I-CUBE-EE.3.2.2
-  MiddleWare fileName : ./NimaLTD.I-CUBE-EE_conf.h
+  MiddleWare fileName : NimaLTD.I-CUBE-EE_conf.h
 */
 /*---------- EE_MANUAL_CONFIG  -----------*/
 #define EE_MANUAL_CONFIG      true
@@ -50,7 +50,7 @@
 #define EE_SELECTED_BANK      FLASH_BANK_1
 
 /*---------- EE_SELECTED_ADDRESS  -----------*/
-#define EE_SELECTED_ADDRESS      0x08020000
+#define EE_SELECTED_ADDRESS      0x08000000
 
 #ifdef __cplusplus
 }

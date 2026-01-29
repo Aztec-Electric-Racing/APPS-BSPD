@@ -126,9 +126,6 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_DAC_Init();
-
-  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);  // PA4
-  HAL_DAC_Start(&hdac, DAC_CHANNEL_2);  // PA5
   /* USER CODE BEGIN 2 */
 
 
