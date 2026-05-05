@@ -1,6 +1,6 @@
-MCU-Testing Code for the STM32F446RCT6
-By JT Rollinson & Jack Varagas
+MCU - Testing Code
+By Jack Varagas
 
-Initial Commit of the Testing code for the MCU.
-Will merge over to Main once tests are validated.
-1/28/26
+USB CLI much better implemented. All in main function right now but should move into separate file to keep clean.
+
+DAC and ADC conversions likely need to be altered as well paticularly to account for the voltage dividers. 

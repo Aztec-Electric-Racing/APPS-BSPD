@@ -93,6 +93,182 @@ static void MX_DAC_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+static void cli_send(const char *s)
+{
+    CDC_Transmit_HS((uint8_t *)s, strlen(s));
+}
+
+static void cli_trim(char *s)
+{
+    size_t len = strlen(s);
+
+    while (len > 0 && (s[len - 1] == '\r' || s[len - 1] == '\n' || s[len - 1] == ' '))
+    {
+        s[len - 1] = '\0';
+        len--;
+    }
+
+    while (*s == ' ')
+    {
+        memmove(s, s + 1, strlen(s));
+    }
+}
+
+static void cli_uppercase(char *s)
+{
+    while (*s)
+    {
+        *s = toupper((unsigned char)*s);
+        s++;
+    }
+}
+
+static uint16_t clamp_u12(int32_t value)
+{
+    if (value < 0) return 0;
+    if (value > 4095) return 4095;
+    return (uint16_t)value;
+}
+
+static void cli_process(char *cmd)
+{
+    cli_trim(cmd);
+    cli_uppercase(cmd);
+
+    if (strlen(cmd) == 0)
+    {
+        return;
+    }
+
+    if (strcmp(cmd, "HELP") == 0 || strcmp(cmd, "?") == 0)
+    {
+        cli_send(
+            "\r\nCommands:\r\n"
+            "  HELP              Show this menu\r\n"
+            "  PING              Test USB connection\r\n"
+            "  READ              Read current APPS ADC values\r\n"
+            "  GETSAVED          Show saved calibration values\r\n"
+            "  SAVE LOWER        Save current ADCs as lower calibration\r\n"
+            "  SAVE UPPER        Save current ADCs as upper calibration\r\n"
+            "  SET LOWER a b     Manually set lower values\r\n"
+            "  SET UPPER a b     Manually set upper values\r\n"
+            "  STATUS            Show current safety/calibration state\r\n"
+            "  RESETCAL          Reset calibration to safe defaults\r\n"
+            "\r\n"
+        );
+    }
+    else if (strcmp(cmd, "PING") == 0)
+    {
+        cli_send("PONG\r\n");
+    }
+    else if (strcmp(cmd, "READ") == 0)
+    {
+        char msg[96];
+        snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
+        cli_send(msg);
+    }
+    else if (strcmp(cmd, "SAVE LOWER") == 0)
+    {
+        ee.sens1Lower = apps1;
+        ee.sens2Lower = apps2;
+        ee_write();
+
+        char msg[128];
+        snprintf(msg, sizeof(msg),
+                 "Saved lower: APPS1=%lu, APPS2=%lu\r\n",
+                 ee.sens1Lower, ee.sens2Lower);
+        cli_send(msg);
+    }
+    else if (strcmp(cmd, "SAVE UPPER") == 0)
+    {
+        ee.sens1Upper = apps1;
+        ee.sens2Upper = apps2;
+        ee_write();
+
+        char msg[128];
+        snprintf(msg, sizeof(msg),
+                 "Saved upper: APPS1=%lu, APPS2=%lu\r\n",
+                 ee.sens1Upper, ee.sens2Upper);
+        cli_send(msg);
+    }
+    else if (strncmp(cmd, "SET LOWER ", 10) == 0)
+    {
+        int s1, s2;
+
+        if (sscanf(cmd + 10, "%d %d", &s1, &s2) == 2)
+        {
+            ee.sens1Lower = clamp_u12(s1);
+            ee.sens2Lower = clamp_u12(s2);
+            ee_write();
+
+            cli_send("Manual lower calibration saved.\r\n");
+        }
+        else
+        {
+            cli_send("Usage: SET LOWER <apps1> <apps2>\r\n");
+        }
+    }
+    else if (strncmp(cmd, "SET UPPER ", 10) == 0)
+    {
+        int s1, s2;
+
+        if (sscanf(cmd + 10, "%d %d", &s1, &s2) == 2)
+        {
+            ee.sens1Upper = clamp_u12(s1);
+            ee.sens2Upper = clamp_u12(s2);
+            ee_write();
+
+            cli_send("Manual upper calibration saved.\r\n");
+        }
+        else
+        {
+            cli_send("Usage: SET UPPER <apps1> <apps2>\r\n");
+        }
+    }
+    else if (strcmp(cmd, "GETSAVED") == 0)
+    {
+        char msg[160];
+        snprintf(msg, sizeof(msg),
+                 "Lower1=%lu, Lower2=%lu, Upper1=%lu, Upper2=%lu\r\n",
+                 ee.sens1Lower, ee.sens2Lower,
+                 ee.sens1Upper, ee.sens2Upper);
+        cli_send(msg);
+    }
+    else if (strcmp(cmd, "STATUS") == 0)
+    {
+        uint8_t valid =
+            (ee.sens1Lower <= apps1) &&
+            (apps1 <= ee.sens1Upper) &&
+            (ee.sens2Lower <= apps2) &&
+            (apps2 <= ee.sens2Upper);
+
+        char msg[192];
+        snprintf(msg, sizeof(msg),
+                 "APPS1=%u, APPS2=%u, State=%s\r\n"
+                 "Limits: S1[%lu,%lu], S2[%lu,%lu]\r\n",
+                 apps1, apps2,
+                 valid ? "VALID" : "FAULT",
+                 ee.sens1Lower, ee.sens1Upper,
+                 ee.sens2Lower, ee.sens2Upper);
+        cli_send(msg);
+    }
+    else if (strcmp(cmd, "RESETCAL") == 0)
+    {
+        ee.sens1Lower = (uint32_t)((1.543f / 3.3f) * 4095.0f);
+        ee.sens2Lower = (uint32_t)((0.870f / 3.3f) * 4095.0f);
+        ee.sens1Upper = (uint32_t)((2.216f / 3.3f) * 4095.0f);
+        ee.sens2Upper = (uint32_t)((1.543f / 3.3f) * 4095.0f);
+        ee_write();
+
+        cli_send("Calibration reset to default values.\r\n");
+    }
+    else
+    {
+        cli_send("Unknown command. Type HELP.\r\n");
+    }
+}
+
+
 /* USER CODE END 0 */
 
 /**
@@ -146,11 +322,10 @@ int main(void)
   //EEWriteLatch = 1;
   if(EEWriteLatch == 1) {
   			//Adjusted values
-  			ee.sens1Lower = (int)((1.543/3.3) * 4095);
-  			ee.sens2Lower = (int)((0.87/3.3) * 4095);
-  			ee.sens1Upper = (int)((2.216/3.3) * 4095);
-  			ee.sens2Upper = (int)((1.543/3.3) * 4095);
-  			ee_write();
+	 		 ee.sens1Lower = (uint32_t)((1.543f / 3.3f) * 4095.0f);
+	         ee.sens2Lower = (uint32_t)((0.870f / 3.3f) * 4095.0f);
+	         ee.sens1Upper = (uint32_t)((2.216f / 3.3f) * 4095.0f);
+	         ee.sens2Upper = (uint32_t)((1.543f / 3.3f) * 4095.0f);
 
   			EEWriteLatch = 0;
   		}
@@ -191,68 +366,21 @@ int main(void)
 
 
 
-	  	 if (DataReceivedFlag)
-	  	 	      {
-	  	 	          DataReceivedFlag = 0;
+	  	 if (DataReceivedFlag){
+          DataReceivedFlag = 0;
 
-	  	 	         // Ensure null-termination for string compares
-	  				 if (UserRxLength >= sizeof(UserRxBuffer))
-	  					 UserRxLength = sizeof(UserRxBuffer) - 1;
-	  				 UserRxBuffer[UserRxLength] = '\0';
+          if (UserRxLength >= sizeof(UserRxBuffer))
+          {
+              UserRxLength = sizeof(UserRxBuffer) - 1;
+          }
 
-	  				 if (strcmp(UserRxBuffer, "PING\r\n") == 0)
-	  				    {
-	  					 CDC_Transmit_HS("PONG\r\n", 6);
-	  				    }
-	  				    else if (strcmp(UserRxBuffer, "READ") == 0)
-	  				    {
-	  				        // Read current ADC value and display it
+          UserRxBuffer[UserRxLength] = '\0';
 
-	  				        char msg[64];
-	  				        snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
-	  				        CDC_Transmit_HS(msg, strlen(msg));
-	  				    }
-	  				    else if (strcmp(UserRxBuffer, "SAVE UPPER") == 0)
-	  				    {
-	  				        // Read ADC, save it, and display current + saved
-	  				    	//Convert adc value to volts
-	  				    	ee.sens1Upper = apps1;
-	  				    	ee.sens2Upper = apps2;
-							ee_write();
-
-							//Message to transmit over USB
-	  				        char msg[96];
-	  				        snprintf(msg, sizeof(msg), "SAVED Uppper1=%lu, Upper2=%lu\r\n", ee.sens1Upper, ee.sens2Upper);
-	  				        CDC_Transmit_HS(msg, strlen(msg));
-	  				    }
-	  				    else if (strcmp(UserRxBuffer, "SAVE LOWER") == 0)
-						{
-							// Read ADC, save it, and display current + saved
-							//Convert adc value to volts
-							ee.sens1Lower = apps1; //Should use internal reference value instead of 3.3
-							ee.sens2Lower = apps2;
-							ee_write();
-
-							//Message to transmit over USB
-							char msg[96];
-							snprintf(msg, sizeof(msg), "SAVED Lower1=%lu, Lower2=%lu\r\n", ee.sens1Lower, ee.sens2Lower);
-							CDC_Transmit_HS(msg, strlen(msg));
-						}
-	  				    else if (strcmp(UserRxBuffer, "GETSAVED") == 0)
-	  				    {
-
-	  				            char msg[64];
-	  				            snprintf(msg, sizeof(msg), "Saved Upper1=%lu, Saved Upper2=%lu, Saved Lower1=%lu, Saved Lower2=%lu \r\n", ee.sens1Upper, ee.sens2Upper, ee.sens1Lower, ee.sens2Lower);
-	  				            CDC_Transmit_HS(msg, strlen(msg));
-
-	  				    }
-	  				    else
-	  				    {
-	  				    	CDC_Transmit_HS("Unknown command.\r\n", strlen("Unknown command.\r\n"));
-	  				    }
+          cli_process((char *)UserRxBuffer);
+        }
 
 	      /* USER CODE BEGIN 3 */
-	    }
+	    
 
     /* USER CODE END WHILE */
 
