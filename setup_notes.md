@@ -1,0 +1,5 @@
+# Setup Notes - Dominic Hickman
+
+- **What worked:** Generating the SSH key with `ssh-keygen -t ed25519`, starting the ssh-agent, and cloning the APPS-BSPD repo over SSH all went smoothly once things were set up correctly. VS Code connected to the WSL Ubuntu environment without issues.
+- **What broke:** I first ran `ssh-add` with an incomplete path (`~/.ssh/id_`) and got a "No such file or directory" error — fixed by using the full filename `id_ed25519`. I also initially forgot to actually paste my public key into GitHub, so `ssh -T git@github.com` failed with "Permission denied (publickey)" until I added it. 
+- **What I learned:** Small typos in file paths cause real errors, so it helps to double check full paths before running a command. I also learned how to use git from a different terminal. Most of my git experience has been through the VS code terminal. This is my first time using Ubuntu.
