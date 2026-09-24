@@ -1,0 +1,3 @@
+- What worked: Ubuntu, Git, SSH, GitHub, and VS Code were set up successfully.
+- What broke: Ubuntu initially needed virtualization features enabled.
+- What I learned: I learned how to connect Ubuntu, Git, GitHub, and VS Code.
