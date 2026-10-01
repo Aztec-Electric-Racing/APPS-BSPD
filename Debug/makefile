@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (13.3.rel1)
+# Toolchain: GNU Tools for STM32 (14.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -38,34 +38,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := USBTEST
+BUILD_ARTIFACT_NAME := APPS_BSPD Firmware
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-USBTEST.elf \
+APPS_BSPD\ Firmware.elf \
 
 MAP_FILES += \
-USBTEST.map \
+APPS_BSPD\ Firmware.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-USBTEST.list \
+APPS_BSPD\ Firmware.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: USBTEST.elf secondary-outputs
+main-build: APPS_BSPD\ Firmware.elf secondary-outputs
 
 # Tool invocations
-USBTEST.elf USBTEST.map: $(OBJS) $(USER_OBJS) C:\Users\jackv\STM32CubeIDE\workspace_1.19.0\USBTEST\STM32F446RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "USBTEST.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\jackv\STM32CubeIDE\workspace_1.19.0\USBTEST\STM32F446RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="USBTEST.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+APPS_BSPD\ Firmware.elf APPS_BSPD\ Firmware.map: $(OBJS) $(USER_OBJS) C:\Users\kami\Downloads\AER\ New\ Member\ Project\ (APPS)\APPS-BSPD\STM32F446RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "APPS_BSPD Firmware.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\kami\Downloads\AER New Member Project (APPS)\APPS-BSPD\STM32F446RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="APPS_BSPD Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -74,14 +74,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-USBTEST.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "USBTEST.list"
+APPS_BSPD\ Firmware.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "APPS_BSPD Firmware.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) USBTEST.elf USBTEST.list USBTEST.map default.size.stdout
+	-$(RM) APPS_BSPD\ Firmware.elf APPS_BSPD\ Firmware.list APPS_BSPD\ Firmware.map APPS_BSPD\\ Firmware.elf default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

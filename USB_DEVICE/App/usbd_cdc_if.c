@@ -22,7 +22,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include <string.h>
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,9 +95,18 @@ uint8_t UserRxBufferHS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferHS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-uint8_t UserRxBuffer[512];
-volatile uint32_t UserRxLength;
+uint8_t UserRxBuffer[USER_RX_BUFFER_SIZE];
+volatile uint32_t UserRxLength = 0;
 volatile uint8_t DataReceivedFlag = 0;
+volatile uint8_t UsbPortOpen = 0;
+volatile uint8_t UsbPortJustOpened = 0;
+
+/* Terminals usually send one character per USB packet, so build up a line here */
+static uint8_t LineBuffer[USER_RX_BUFFER_SIZE];
+static uint32_t LineLength = 0;
+
+/* Line coding reported to the host: 115200 baud, 1 stop bit, no parity, 8 data bits */
+static uint8_t LineCoding[7] = { 0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08 };
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -159,6 +168,7 @@ static int8_t CDC_Init_HS(void)
   /* Set Application Buffers */
   USBD_CDC_SetTxBuffer(&hUsbDeviceHS, UserTxBufferHS, 0);
   USBD_CDC_SetRxBuffer(&hUsbDeviceHS, UserRxBufferHS);
+  UsbPortOpen = 0;
   return (USBD_OK);
   /* USER CODE END 8 */
 }
@@ -171,6 +181,7 @@ static int8_t CDC_Init_HS(void)
 static int8_t CDC_DeInit_HS(void)
 {
   /* USER CODE BEGIN 9 */
+  UsbPortOpen = 0;
   return (USBD_OK);
   /* USER CODE END 9 */
 }
@@ -225,16 +236,31 @@ static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
   case CDC_SET_LINE_CODING:
-
+    /* Baud rate doesn't affect a virtual COM port, just remember it so GET returns what the host set */
+    if (length >= sizeof(LineCoding))
+    {
+      memcpy(LineCoding, pbuf, sizeof(LineCoding));
+    }
     break;
 
   case CDC_GET_LINE_CODING:
-
+    /* pbuf is a shared scratch buffer, it must be filled or the host reads back garbage (e.g. 0 baud) */
+    memcpy(pbuf, LineCoding, sizeof(LineCoding));
     break;
 
   case CDC_SET_CONTROL_LINE_STATE:
-
+  {
+    /* No data stage, pbuf is the setup request. Bit 0 of wValue is DTR, which terminals
+     * assert when they open the port and clear when they close it. */
+    USBD_SetupReqTypedef *req = (USBD_SetupReqTypedef*)pbuf;
+    uint8_t dtr = (req->wValue & 0x01U) ? 1U : 0U;
+    if (dtr && !UsbPortOpen)
+    {
+      UsbPortJustOpened = 1;
+    }
+    UsbPortOpen = dtr;
     break;
+  }
 
   case CDC_SEND_BREAK:
 
@@ -266,6 +292,27 @@ static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_HS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 11 */
+  for (uint32_t i = 0; i < *Len; i++)
+  {
+    uint8_t c = Buf[i];
+    if (c == '\r' || c == '\n')
+    {
+      /* Only hand off a line if main has finished with the previous one, otherwise drop it */
+      if (LineLength > 0 && !DataReceivedFlag)
+      {
+        memcpy(UserRxBuffer, LineBuffer, LineLength);
+        UserRxBuffer[LineLength] = '\0';
+        UserRxLength = LineLength;
+        DataReceivedFlag = 1;
+      }
+      LineLength = 0;
+    }
+    else if (LineLength < sizeof(LineBuffer) - 1)
+    {
+      LineBuffer[LineLength++] = c;
+    }
+  }
+
   USBD_CDC_SetRxBuffer(&hUsbDeviceHS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceHS);
   return (USBD_OK);
@@ -317,7 +364,40 @@ static int8_t CDC_TransmitCplt_HS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
+/**
+  * @brief  Sends a null-terminated string over USB CDC.
+  *         The string is copied into UserTxBufferHS, so the caller's buffer
+  *         (e.g. a local char array) can go out of scope right after this returns.
+  * @param  str: String to send
+  * @retval USBD_OK if queued, USBD_BUSY if the previous transfer didn't finish in time,
+  *         USBD_FAIL if USB isn't connected/configured.
+  */
+uint8_t CDC_SendString(const char* str)
+{
+  if (hUsbDeviceHS.dev_state != USBD_STATE_CONFIGURED || hUsbDeviceHS.pClassData == NULL)
+  {
+    return USBD_FAIL;
+  }
 
+  /* Wait for the previous transfer to finish before reusing the TX buffer */
+  USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceHS.pClassData;
+  uint32_t start = HAL_GetTick();
+  while (hcdc->TxState != 0)
+  {
+    if (HAL_GetTick() - start > 50)
+    {
+      return USBD_BUSY;
+    }
+  }
+
+  size_t len = strlen(str);
+  if (len > APP_TX_DATA_SIZE)
+  {
+    len = APP_TX_DATA_SIZE;
+  }
+  memcpy(UserTxBufferHS, str, len);
+  return CDC_Transmit_HS(UserTxBufferHS, (uint16_t)len);
+}
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

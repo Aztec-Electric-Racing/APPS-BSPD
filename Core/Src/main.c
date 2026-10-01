@@ -19,11 +19,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
-#include "ee.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "ee.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,7 +43,17 @@ typedef struct
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ADC_MAX_COUNTS          4095
+#define DAC_MAX_COUNTS          4095
 
+/* Allowed APPS1/APPS2 disagreement as a fraction of pedal travel (FSAE: 10%) */
+#define SENS_ACCEPTABLE_DIFF    0.10f
+
+/* How often the "USB OK" heartbeat line is printed while a terminal is open */
+#define HEARTBEAT_PERIOD_MS     1000
+
+/* Converts ADC/DAC counts to millivolts at the MCU pin (before any external divider) */
+#define COUNTS_TO_MV(c)         ((uint32_t)(c) * 3300U / 4095U)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,24 +68,23 @@ DMA_HandleTypeDef hdma_adc1;
 DAC_HandleTypeDef hdac;
 
 /* USER CODE BEGIN PV */
-extern uint8_t UserRxBuffer[512];
-extern uint32_t UserRxLength;
-extern volatile uint8_t DataReceivedFlag;
-
 volatile uint16_t adc_buf[2];   // [0] = PC4, [1] = PC5 (based on rank order)
 volatile uint16_t apps1 = 0;
 volatile uint16_t apps2 = 0;
 
-//Values for USB Commands
-volatile uint16_t apps1_saved = 0;
-volatile uint16_t apps2_saved = 0;
-volatile uint8_t  saved_valid = 0;
-
-
-
 //Emulated EEPROM
 Storage_t ee;
-volatile uint8_t EEWriteLatch = 0;
+
+//Derived from ee, recalculate with UpdateSensorRanges() whenever ee changes
+uint16_t sens1Range = 0;
+uint16_t sens2Range = 0;
+
+//Last values written to the DACs, for STATUS/heartbeat output
+uint32_t dac1Out = 0;
+uint32_t dac2Out = 0;
+uint8_t appsFault = 1;
+
+uint8_t heartbeatEnabled = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -82,12 +94,145 @@ static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void LoadDefaultCalibration(void);
+static uint8_t CalibrationIsValid(void);
+static void UpdateSensorRanges(void);
+static uint32_t ClampDac(int32_t value);
+static void HandleUsbCommand(const char* cmd);
+static void SendStatusLine(const char* prefix);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static void LoadDefaultCalibration(void)
+{
+  ee.sens1Lower = (uint32_t)((1.543 / 3.3) * ADC_MAX_COUNTS);
+  ee.sens2Lower = (uint32_t)((0.87 / 3.3) * ADC_MAX_COUNTS);
+  ee.sens1Upper = (uint32_t)((2.216 / 3.3) * ADC_MAX_COUNTS);
+  ee.sens2Upper = (uint32_t)((1.543 / 3.3) * ADC_MAX_COUNTS);
+}
 
+/* Erased flash reads as 0xFFFFFFFF, so this also catches a board that has never been calibrated */
+static uint8_t CalibrationIsValid(void)
+{
+  return (ee.sens1Lower < ee.sens1Upper) && (ee.sens1Upper <= ADC_MAX_COUNTS) &&
+         (ee.sens2Lower < ee.sens2Upper) && (ee.sens2Upper <= ADC_MAX_COUNTS);
+}
+
+static void UpdateSensorRanges(void)
+{
+  sens1Range = (uint16_t)abs((int32_t)ee.sens1Upper - (int32_t)ee.sens1Lower);
+  sens2Range = (uint16_t)abs((int32_t)ee.sens2Upper - (int32_t)ee.sens2Lower);
+}
+
+static uint32_t ClampDac(int32_t value)
+{
+  if (value < 0) return 0;
+  if (value > DAC_MAX_COUNTS) return DAC_MAX_COUNTS;
+  return (uint32_t)value;
+}
+
+static void SendStatusLine(const char* prefix)
+{
+  char msg[160];
+  uint16_t s1 = apps1;
+  uint16_t s2 = apps2;
+  snprintf(msg, sizeof(msg),
+           "%s up %lus | APPS1=%u (%lumV) APPS2=%u (%lumV) | %s | DAC1=%lu (%lumV) DAC2=%lu (%lumV)\r\n",
+           prefix, HAL_GetTick() / 1000,
+           s1, COUNTS_TO_MV(s1), s2, COUNTS_TO_MV(s2),
+           appsFault ? "FAULT" : "OK",
+           dac1Out, COUNTS_TO_MV(dac1Out), dac2Out, COUNTS_TO_MV(dac2Out));
+  CDC_SendString(msg);
+}
+
+static void SendBanner(void)
+{
+  CDC_SendString("\r\n=== AER APPS-BSPD firmware, built " __DATE__ " " __TIME__ " ===\r\n"
+                 "USB serial OK. Type HELP for commands.\r\n");
+}
+
+static void HandleUsbCommand(const char* cmd)
+{
+  char msg[128];
+
+  if (strcmp(cmd, "HELP") == 0)
+  {
+    CDC_SendString("Commands:\r\n"
+                   "  PING            Reply PONG\r\n"
+                   "  READ            Raw ADC counts for APPS1/APPS2\r\n"
+                   "  STATUS          ADC + DAC values in counts and mV, OK/FAULT\r\n"
+                   "  GETSAVED        Show saved calibration\r\n"
+                   "  SAVE LOWER      Save current pedal position as lower limit\r\n"
+                   "  SAVE UPPER      Save current pedal position as upper limit\r\n"
+                   "  HEARTBEAT ON    Print STATUS every second (default)\r\n"
+                   "  HEARTBEAT OFF   Stop the periodic STATUS line\r\n");
+  }
+  else if (strcmp(cmd, "STATUS") == 0)
+  {
+    SendStatusLine("STATUS");
+  }
+  else if (strcmp(cmd, "HEARTBEAT ON") == 0 || strcmp(cmd, "HEARTBEAT OFF") == 0)
+  {
+    heartbeatEnabled = (strcmp(cmd, "HEARTBEAT ON") == 0);
+    CDC_SendString(heartbeatEnabled ? "Heartbeat on.\r\n" : "Heartbeat off.\r\n");
+  }
+  else if (strcmp(cmd, "PING") == 0)
+  {
+    CDC_SendString("PONG\r\n");
+  }
+  else if (strcmp(cmd, "READ") == 0)
+  {
+    // Read current ADC value and display it
+    snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
+    CDC_SendString(msg);
+  }
+  else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
+  {
+    // Store raw ADC counts, the same units the main loop compares against.
+    // Note: erasing the 128K sector stalls the CPU for ~1-2s, the DACs hold their last value meanwhile.
+    uint8_t upper = (strcmp(cmd, "SAVE UPPER") == 0);
+    Storage_t previous = ee;
+    if (upper)
+    {
+      ee.sens1Upper = apps1;
+      ee.sens2Upper = apps2;
+    }
+    else
+    {
+      ee.sens1Lower = apps1;
+      ee.sens2Lower = apps2;
+    }
+
+    if (!CalibrationIsValid())
+    {
+      ee = previous;
+      CDC_SendString("ERROR: lower must be below upper, calibration not saved.\r\n");
+    }
+    else if (!ee_write())
+    {
+      CDC_SendString("ERROR: flash write failed.\r\n");
+    }
+    else
+    {
+      UpdateSensorRanges();
+      snprintf(msg, sizeof(msg), "SAVED %s1=%lu, %s2=%lu\r\n",
+               upper ? "Upper" : "Lower", upper ? ee.sens1Upper : ee.sens1Lower,
+               upper ? "Upper" : "Lower", upper ? ee.sens2Upper : ee.sens2Lower);
+      CDC_SendString(msg);
+    }
+  }
+  else if (strcmp(cmd, "GETSAVED") == 0)
+  {
+    snprintf(msg, sizeof(msg), "Saved Upper1=%lu, Saved Upper2=%lu, Saved Lower1=%lu, Saved Lower2=%lu\r\n",
+             ee.sens1Upper, ee.sens2Upper, ee.sens1Lower, ee.sens2Lower);
+    CDC_SendString(msg);
+  }
+  else
+  {
+    CDC_SendString("Unknown command. Type HELP.\r\n");
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -98,8 +243,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	 uint16_t sens1Range = abs(ee.sens1Upper - ee.sens1Lower);
-	 uint16_t sens2Range = abs(ee.sens2Upper - ee.sens2Lower);
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -125,126 +269,88 @@ int main(void)
   MX_ADC1_Init();
   MX_DAC_Init();
   /* USER CODE BEGIN 2 */
+  // Start in the "shut down" state until calibration is loaded
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0);
+  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+  HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
+
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2);
   HAL_Delay(1000);
 
-  EE_Init(&ee, sizeof(Storage_t));
-  EE_Read();
+  // Load calibration from flash. Only fall back to (and write) the defaults when
+  // flash is blank/invalid, so a USB calibration isn't overwritten on every boot.
+  if (!ee_init(&ee, sizeof(Storage_t)))
+  {
+    Error_Handler();
+  }
+  ee_read();
+  if (!CalibrationIsValid())
+  {
+    LoadDefaultCalibration();
+    ee_write();
+  }
+  UpdateSensorRanges();
 
-
-  /*Just setting specified values for testing I think?
-  	   Am going to keep this but for safe values at least for now I
-  	   will likely change it later */
-  EEWriteLatch = 1;
-  if(EEWriteLatch == 1) {
-  			//Adjusted values
-  			ee.sens1Lower = (int)((1.543/3.3) * 4095);
-  			ee.sens2Lower = (int)((0.87/3.3) * 4095);
-  			ee.sens1Upper = (int)((2.216/3.3) * 4095);
-  			ee.sens2Upper = (int)((1.543/3.3) * 4095);
-  			EE_Write();
-
-  			EEWriteLatch = 0;
-  		}
+  /*IMPORTANT: Should probably move off of Emulated EEPROM to save memory life. I was reasearching
+   * and it seemed as if there was a way to write to flash as long as it was empty. Just have a bunch of
+   * indexed entries in the sector and only erase it and rewrite once it is full. Use the highest indexed value.
+   * Currently the EEPROM has to erase every time we write I believe even though we only use a small amount of the sector most likely */
+  uint32_t lastHeartbeat = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 apps1 = adc_buf[0];
-	  /* USER CODE END WHILE */
-
-
-	 	 //Math section
-	 	 /*Make sure that the sensors going into the mcu are correct values, shutdown otherwise
-	 	  *
-	 	  * Also for the DAC math I need to account for the voltage divider on the adc and reverse it for the DAC output. It shouldn't be
-	 	  * that high so reversing it should be fine*/
-	  if((ee.sens1Lower <= apps1) && (apps1 <= ee.sens1Upper) && (ee.sens2Lower <= apps2) && (apps2 <= ee.sens2Upper)) {
-		  /**/
-		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, abs(ee.sens1Lower - ee.sens2Lower) + sens1Range * sensAcceptibleDiff ); // 0–4095
-		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, abs(ee.sens1Lower - ee.sens2Lower) - sens1Range * sensAcceptibleDiff );
-	  }
-	  else {
-		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0); // 0–4095 idk what this number means bruh JT why didnt you document properlu
-		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0); //0-4095 is the range of stored values for 12 bit adc I think we are using 12 rn
-	  }
-
-	  /*IMPORTANT: Should probably move off of Emulated EEPROM to save memory life. I was reasearching
-	   * and it seemed as if there was a way to write to flash as long as it was empty. Just have a bunch of
-	   * indexed entries in the sector and only erase it and rewrite once it is full. Use the highest indexed value.
-	   * Currently the EEPROM has to erase every time we write I believe even though we only use a small amount of the sector most likely */
-
-
-
-
-	  	 if (DataReceivedFlag)
-	  	 	      {
-	  	 	          DataReceivedFlag = 0;
-
-	  	 	         // Ensure null-termination for string compares
-	  				 if (UserRxLength >= sizeof(UserRxBuffer))
-	  					 UserRxLength = sizeof(UserRxBuffer) - 1;
-	  				 UserRxBuffer[UserRxLength] = '\0';
-
-	  				 if (strcmp(cmd, "PING") == 0)
-	  				    {
-	  				        CDC_SendString("PONG\r\n");
-	  				    }
-	  				    else if (strcmp(cmd, "READ") == 0)
-	  				    {
-	  				        // Read current ADC value and display it
-
-	  				        char msg[64];
-	  				        snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
-	  				        CDC_SendString(msg);
-	  				    }
-	  				    else if (strcmp(cmd, "SAVE UPPER") == 0)
-	  				    {
-	  				        // Read ADC, save it, and display current + saved
-	  				    	//Convert adc value to volts
-	  				    	ee.sens1Upper = (int)((apps1/4095)*3.3); //Should use internal reference value instead of 3.3
-							ee.sens2Upper = (int)((apps2/4095)*3.3);
-							EE_Write();
-
-							//Message to transmit over USB
-	  				        char msg[96];
-	  				        snprintf(msg, sizeof(msg), "SAVED Uppper1=%u, Upper2=%u\r\n", ee.sens1Upper, ee.sens2Upper);
-	  				        CDC_SendString(msg);
-	  				    }
-	  				    else if (strcmp(cmd, "SAVE LOWER") == 0)
-						{
-							// Read ADC, save it, and display current + saved
-							//Convert adc value to volts
-							ee.sens1Lower = (int)((apps1/4095)*3.3); //Should use internal reference value instead of 3.3
-							ee.sens2Lower = (int)((apps2/4095)*3.3);
-							EE_Write();
-
-							//Message to transmit over USB
-							char msg[96];
-							snprintf(msg, sizeof(msg), "SAVED Lower1=%u, Lower2=%u\r\n", ee.sens1Lower, ee.sens2Lower);
-							CDC_SendString(msg);
-						}
-	  				    else if (strcmp(cmd, "GETSAVED") == 0)
-	  				    {
-
-	  				            char msg[64];
-	  				            snprintf(msg, sizeof(msg), "Saved Upper1=%u, Saved Upper2=%u, Saved Lower1=%u, Saved Lower2=%u \r\n", ee.sens1Upper, ee.sens2Upper, ee.sens1Lower, ee.sens2Lower);
-	  				            CDC_SendString(msg);
-
-	  				    }
-	  				    else
-	  				    {
-	  				        CDC_SendString("Unknown command.\r\n");
-	  				    }
-
-	      /* USER CODE BEGIN 3 */
-	    }
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // Take one snapshot so both checks and the USB READ use the same sample
+    uint16_t s1 = apps1;
+    uint16_t s2 = apps2;
+
+    //Math section
+    /*Make sure that the sensors going into the mcu are correct values, shutdown otherwise
+     *
+     * Also for the DAC math I need to account for the voltage divider on the adc and reverse it for the DAC output. It shouldn't be
+     * that high so reversing it should be fine*/
+    if ((ee.sens1Lower <= s1) && (s1 <= ee.sens1Upper) && (ee.sens2Lower <= s2) && (s2 <= ee.sens2Upper))
+    {
+      int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
+      int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
+      dac1Out = ClampDac(offset + tolerance);
+      dac2Out = ClampDac(offset - tolerance);
+      appsFault = 0;
+    }
+    else
+    {
+      // Out of range: drive both outputs to 0 V (DAC counts 0-4095 map to 0-3.3 V)
+      dac1Out = 0;
+      dac2Out = 0;
+      appsFault = 1;
+    }
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out);
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out);
+
+    // Greet the terminal when it opens the port, then print a heartbeat so it's obvious USB is alive.
+    // Only while the port is open: with no terminal reading, transmits would never complete.
+    if (UsbPortJustOpened)
+    {
+      UsbPortJustOpened = 0;
+      SendBanner();
+    }
+    if (UsbPortOpen && heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
+    {
+      lastHeartbeat = HAL_GetTick();
+      SendStatusLine("[USB OK]");
+    }
+
+    if (DataReceivedFlag)
+    {
+      HandleUsbCommand((const char*)UserRxBuffer);
+      DataReceivedFlag = 0;
+    }
   }
   /* USER CODE END 3 */
 }
@@ -316,7 +422,7 @@ static void MX_ADC1_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ENABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
@@ -336,7 +442,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_14;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();

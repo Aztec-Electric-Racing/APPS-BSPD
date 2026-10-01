@@ -94,7 +94,18 @@
 extern USBD_CDC_ItfTypeDef USBD_Interface_fops_HS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
+#define USER_RX_BUFFER_SIZE 512
 
+/* One complete command line (CR/LF stripped, null-terminated). Valid while DataReceivedFlag is set;
+ * clear DataReceivedFlag once the command has been handled so the next line can be received. */
+extern uint8_t UserRxBuffer[USER_RX_BUFFER_SIZE];
+extern volatile uint32_t UserRxLength;
+extern volatile uint8_t DataReceivedFlag;
+
+/* Set while a terminal has the COM port open (DTR asserted). UsbPortJustOpened is set once
+ * each time the port is opened, clear it after printing the welcome banner. */
+extern volatile uint8_t UsbPortOpen;
+extern volatile uint8_t UsbPortJustOpened;
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**
@@ -109,7 +120,7 @@ extern USBD_CDC_ItfTypeDef USBD_Interface_fops_HS;
 uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
-
+uint8_t CDC_SendString(const char* str);
 /* USER CODE END EXPORTED_FUNCTIONS */
 
 /**

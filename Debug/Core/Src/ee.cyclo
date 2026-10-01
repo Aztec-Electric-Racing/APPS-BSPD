@@ -1,0 +1,5 @@
+../Core/Src/ee.c:144:6:ee_init	2
+../Core/Src/ee.c:206:10:ee_capacity	1
+../Core/Src/ee.c:216:6:ee_format	3
+../Core/Src/ee.c:274:6:ee_read	3
+../Core/Src/ee.c:302:6:ee_write	7
