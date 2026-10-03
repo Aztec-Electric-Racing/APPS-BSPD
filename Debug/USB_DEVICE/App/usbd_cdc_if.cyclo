@@ -1,7 +1,7 @@
-../USB_DEVICE/App/usbd_cdc_if.c:165:15:CDC_Init_HS	1
-../USB_DEVICE/App/usbd_cdc_if.c:181:15:CDC_DeInit_HS	1
-../USB_DEVICE/App/usbd_cdc_if.c:196:15:CDC_Control_HS	7
-../USB_DEVICE/App/usbd_cdc_if.c:292:15:CDC_Receive_HS	7
-../USB_DEVICE/App/usbd_cdc_if.c:329:9:CDC_Transmit_HS	2
-../USB_DEVICE/App/usbd_cdc_if.c:355:15:CDC_TransmitCplt_HS	1
-../USB_DEVICE/App/usbd_cdc_if.c:375:9:CDC_SendString	6
+../USB_DEVICE/App/usbd_cdc_if.c:164:15:CDC_Init_HS	1
+../USB_DEVICE/App/usbd_cdc_if.c:180:15:CDC_DeInit_HS	1
+../USB_DEVICE/App/usbd_cdc_if.c:195:15:CDC_Control_HS	5
+../USB_DEVICE/App/usbd_cdc_if.c:287:15:CDC_Receive_HS	7
+../USB_DEVICE/App/usbd_cdc_if.c:324:9:CDC_Transmit_HS	2
+../USB_DEVICE/App/usbd_cdc_if.c:350:15:CDC_TransmitCplt_HS	1
+../USB_DEVICE/App/usbd_cdc_if.c:370:9:CDC_SendString	6

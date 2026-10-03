@@ -102,10 +102,8 @@ extern uint8_t UserRxBuffer[USER_RX_BUFFER_SIZE];
 extern volatile uint32_t UserRxLength;
 extern volatile uint8_t DataReceivedFlag;
 
-/* Set while a terminal has the COM port open (DTR asserted). UsbPortJustOpened is set once
- * each time the port is opened, clear it after printing the welcome banner. */
+/* Set while a terminal has the COM port open (DTR asserted). */
 extern volatile uint8_t UsbPortOpen;
-extern volatile uint8_t UsbPortJustOpened;
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**

@@ -99,7 +99,6 @@ uint8_t UserRxBuffer[USER_RX_BUFFER_SIZE];
 volatile uint32_t UserRxLength = 0;
 volatile uint8_t DataReceivedFlag = 0;
 volatile uint8_t UsbPortOpen = 0;
-volatile uint8_t UsbPortJustOpened = 0;
 
 /* Terminals usually send one character per USB packet, so build up a line here */
 static uint8_t LineBuffer[USER_RX_BUFFER_SIZE];
@@ -254,10 +253,6 @@ static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
      * assert when they open the port and clear when they close it. */
     USBD_SetupReqTypedef *req = (USBD_SetupReqTypedef*)pbuf;
     uint8_t dtr = (req->wValue & 0x01U) ? 1U : 0U;
-    if (dtr && !UsbPortOpen)
-    {
-      UsbPortJustOpened = 1;
-    }
     UsbPortOpen = dtr;
     break;
   }

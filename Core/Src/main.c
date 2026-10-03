@@ -46,6 +46,12 @@ typedef struct
 #define ADC_MAX_COUNTS          4095
 #define DAC_MAX_COUNTS          4095
 
+/* The APPS input divider passes approximately 72% of the sensor voltage.
+ * Calibration values are kept in sensor-side counts; normalize ADC readings
+ * before checking ranges and computing the APPS differential. */
+#define APPS_INPUT_DIVIDER_NUM  72U
+#define APPS_INPUT_DIVIDER_DEN  100U
+
 /* Allowed APPS1/APPS2 disagreement as a fraction of pedal travel (FSAE: 10%) */
 #define SENS_ACCEPTABLE_DIFF    0.10f
 
@@ -71,6 +77,8 @@ DAC_HandleTypeDef hdac;
 volatile uint16_t adc_buf[2];   // [0] = PC4, [1] = PC5 (based on rank order)
 volatile uint16_t apps1 = 0;
 volatile uint16_t apps2 = 0;
+uint16_t checkedApps1 = 0;
+uint16_t checkedApps2 = 0;
 
 //Emulated EEPROM
 Storage_t ee;
@@ -84,7 +92,7 @@ uint32_t dac1Out = 0;
 uint32_t dac2Out = 0;
 uint8_t appsFault = 1;
 
-uint8_t heartbeatEnabled = 1;
+uint8_t heartbeatEnabled = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,6 +106,7 @@ static void LoadDefaultCalibration(void);
 static uint8_t CalibrationIsValid(void);
 static void UpdateSensorRanges(void);
 static uint32_t ClampDac(int32_t value);
+static uint16_t AdcToSensorCounts(uint16_t adcCounts);
 static void HandleUsbCommand(const char* cmd);
 static void SendStatusLine(const char* prefix);
 /* USER CODE END PFP */
@@ -132,24 +141,42 @@ static uint32_t ClampDac(int32_t value)
   return (uint32_t)value;
 }
 
-static void SendStatusLine(const char* prefix)
+static uint16_t AdcToSensorCounts(uint16_t adcCounts)
 {
-  char msg[160];
-  uint16_t s1 = apps1;
-  uint16_t s2 = apps2;
-  snprintf(msg, sizeof(msg),
-           "%s up %lus | APPS1=%u (%lumV) APPS2=%u (%lumV) | %s | DAC1=%lu (%lumV) DAC2=%lu (%lumV)\r\n",
-           prefix, HAL_GetTick() / 1000,
-           s1, COUNTS_TO_MV(s1), s2, COUNTS_TO_MV(s2),
-           appsFault ? "FAULT" : "OK",
-           dac1Out, COUNTS_TO_MV(dac1Out), dac2Out, COUNTS_TO_MV(dac2Out));
-  CDC_SendString(msg);
+  uint32_t sensorCounts = ((uint32_t)adcCounts * APPS_INPUT_DIVIDER_DEN +
+                           (APPS_INPUT_DIVIDER_NUM / 2U)) /
+                          APPS_INPUT_DIVIDER_NUM;
+  if (sensorCounts > ADC_MAX_COUNTS) sensorCounts = ADC_MAX_COUNTS;
+  return (uint16_t)sensorCounts;
 }
 
-static void SendBanner(void)
+static void SendStatusLine(const char* prefix)
 {
-  CDC_SendString("\r\n=== AER APPS-BSPD firmware, built " __DATE__ " " __TIME__ " ===\r\n"
-                 "USB serial OK. Type HELP for commands.\r\n");
+  char msg[768];
+  uint16_t adc1 = checkedApps1;
+  uint16_t adc2 = checkedApps2;
+  uint16_t sensor1 = AdcToSensorCounts(adc1);
+  uint16_t sensor2 = AdcToSensorCounts(adc2);
+  int32_t measuredDiffCounts = (int32_t)sensor1 - (int32_t)sensor2;
+  int32_t measuredDiffMv = (measuredDiffCounts * 3300L) / ADC_MAX_COUNTS;
+  int32_t calibratedOffset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
+  int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
+  uint32_t plusRef = ClampDac(calibratedOffset + tolerance);
+  uint32_t minusRef = ClampDac(calibratedOffset - tolerance);
+
+  snprintf(msg, sizeof(msg),
+           "%s up %lus | State: %s\r\n"
+           "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV)\r\n"
+           "APPS sensor-side (divider compensated): APPS1=%lumV [LOW %lumV, HIGH %lumV]; APPS2=%lumV [LOW %lumV, HIGH %lumV]\r\n"
+           "APPS_DIFF measured (APPS1-APPS2): %+ldmV | Calibrated +/-10%% refs: PA4 +10%%=%lumV, PA5 -10%%=%lumV\r\n"
+           "DAC commands (calculated, not pin feedback): PA4/DAC1=%lu counts (%lumV); PA5/DAC2=%lu counts (%lumV)\r\n\r\n",
+           prefix, HAL_GetTick() / 1000, appsFault ? "FAULT" : "OK",
+           adc1, COUNTS_TO_MV(adc1), adc2, COUNTS_TO_MV(adc2),
+           COUNTS_TO_MV(sensor1), COUNTS_TO_MV(ee.sens1Lower), COUNTS_TO_MV(ee.sens1Upper),
+           COUNTS_TO_MV(sensor2), COUNTS_TO_MV(ee.sens2Lower), COUNTS_TO_MV(ee.sens2Upper),
+           (long)measuredDiffMv, COUNTS_TO_MV(plusRef), COUNTS_TO_MV(minusRef),
+           dac1Out, COUNTS_TO_MV(dac1Out), dac2Out, COUNTS_TO_MV(dac2Out));
+  CDC_SendString(msg);
 }
 
 static void HandleUsbCommand(const char* cmd)
@@ -161,11 +188,11 @@ static void HandleUsbCommand(const char* cmd)
     CDC_SendString("Commands:\r\n"
                    "  PING            Reply PONG\r\n"
                    "  READ            Raw ADC counts for APPS1/APPS2\r\n"
-                   "  STATUS          ADC + DAC values in counts and mV, OK/FAULT\r\n"
+                   "  STATUS          Detailed APPS inputs, limits, differential, and DAC commands\r\n"
                    "  GETSAVED        Show saved calibration\r\n"
                    "  SAVE LOWER      Save current pedal position as lower limit\r\n"
                    "  SAVE UPPER      Save current pedal position as upper limit\r\n"
-                   "  HEARTBEAT ON    Print STATUS every second (default)\r\n"
+                   "  HEARTBEAT ON    Print STATUS every second (default off)\r\n"
                    "  HEARTBEAT OFF   Stop the periodic STATUS line\r\n");
   }
   else if (strcmp(cmd, "STATUS") == 0)
@@ -189,19 +216,19 @@ static void HandleUsbCommand(const char* cmd)
   }
   else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
   {
-    // Store raw ADC counts, the same units the main loop compares against.
+    // Store sensor-side counts after compensating for the APPS input divider.
     // Note: erasing the 128K sector stalls the CPU for ~1-2s, the DACs hold their last value meanwhile.
     uint8_t upper = (strcmp(cmd, "SAVE UPPER") == 0);
     Storage_t previous = ee;
     if (upper)
     {
-      ee.sens1Upper = apps1;
-      ee.sens2Upper = apps2;
+      ee.sens1Upper = AdcToSensorCounts(apps1);
+      ee.sens2Upper = AdcToSensorCounts(apps2);
     }
     else
     {
-      ee.sens1Lower = apps1;
-      ee.sens2Lower = apps2;
+      ee.sens1Lower = AdcToSensorCounts(apps1);
+      ee.sens2Lower = AdcToSensorCounts(apps2);
     }
 
     if (!CalibrationIsValid())
@@ -307,8 +334,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     // Take one snapshot so both checks and the USB READ use the same sample
-    uint16_t s1 = apps1;
-    uint16_t s2 = apps2;
+    uint16_t rawS1 = apps1;
+    uint16_t rawS2 = apps2;
+    checkedApps1 = rawS1;
+    checkedApps2 = rawS2;
+    uint16_t s1 = AdcToSensorCounts(rawS1);
+    uint16_t s2 = AdcToSensorCounts(rawS2);
 
     //Math section
     /*Make sure that the sensors going into the mcu are correct values, shutdown otherwise
@@ -330,16 +361,10 @@ int main(void)
       dac2Out = 0;
       appsFault = 1;
     }
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out);
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out);
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out); //PA4
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out); //PA5
 
-    // Greet the terminal when it opens the port, then print a heartbeat so it's obvious USB is alive.
-    // Only while the port is open: with no terminal reading, transmits would never complete.
-    if (UsbPortJustOpened)
-    {
-      UsbPortJustOpened = 0;
-      SendBanner();
-    }
+    // USB output is command-driven by default; no automatic banner or heartbeat.
     if (UsbPortOpen && heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
     {
       lastHeartbeat = HAL_GetTick();
