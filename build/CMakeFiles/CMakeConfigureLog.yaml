@@ -1,0 +1,2258 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineSystem.cmake:12 (find_program)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_UNAME"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "uname"
+    candidate_directories:
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/usr/bin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/local/sbin/uname"
+      - "/usr/local/bin/uname"
+      - "/usr/sbin/uname"
+    found: "/usr/bin/uname"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineSystem.cmake:207 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The target system is: Generic -  - arm
+      The host system is: Linux - 6.18.33.2-microsoft-standard-WSL2 - aarch64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeNinjaFindMake.cmake:5 (find_program)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_MAKE_PROGRAM"
+    description: "Program used to build from build.ninja files."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ninja-build"
+      - "ninja"
+      - "samu"
+    candidate_directories:
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/usr/bin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/local/sbin/ninja-build"
+      - "/usr/local/sbin/ninja"
+      - "/usr/local/sbin/samu"
+      - "/usr/local/bin/ninja-build"
+      - "/usr/local/bin/ninja"
+      - "/usr/local/bin/samu"
+      - "/usr/sbin/ninja-build"
+      - "/usr/sbin/ninja"
+      - "/usr/sbin/samu"
+      - "/usr/bin/ninja-build"
+    found: "/usr/bin/ninja"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompiler.cmake:115 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:67 (_cmake_find_compiler_path)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc"
+    candidate_directories:
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/usr/bin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/local/sbin/arm-none-eabi-gcc"
+      - "/usr/local/bin/arm-none-eabi-gcc"
+      - "/usr/sbin/arm-none-eabi-gcc"
+    found: "/usr/bin/arm-none-eabi-gcc"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCCompilerId.c.in"
+    candidate_directories:
+      - "/usr/share/cmake-4.2/Modules/"
+    found: "/usr/share/cmake-4.2/Modules/CMakeCCompilerId.c.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+      Compiler: /usr/bin/arm-none-eabi-gcc 
+      Build flags: -mcpu=cortex-m4;-mthumb;-mfpu=fpv4-sp-d16;-mfloat-abi=hard
+      Id flags:  
+      
+      The output was:
+      1
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-exit.o): in function `exit':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/stdlib/exit.c:65:(.text+0x14): undefined reference to `_exit'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_exit): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-exit.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/stdlib/exit.c:65:(.text+0x14): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-sbrkr.o): in function `_sbrk_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/sbrkr.c:51:(.text+0xc): undefined reference to `_sbrk'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_sbrk): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-sbrkr.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/sbrkr.c:51:(.text+0xc): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-readr.o): in function `_read_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/readr.c:49:(.text+0x14): undefined reference to `_read'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_read): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-readr.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/readr.c:49:(.text+0x14): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-writer.o): in function `_write_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/writer.c:49:(.text+0x14): undefined reference to `_write'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_write): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-writer.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/writer.c:49:(.text+0x14): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-closer.o): in function `_close_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/closer.c:47:(.text+0xc): undefined reference to `_close'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_close): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-closer.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/closer.c:47:(.text+0xc): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-lseekr.o): in function `_lseek_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/lseekr.c:49:(.text+0x14): undefined reference to `_lseek'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_lseek): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-lseekr.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/lseekr.c:49:(.text+0x14): dangerous relocation: unsupported relocation
+      collect2: error: ld returned 1 exit status
+      
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCCompilerId.c.in"
+    candidate_directories:
+      - "/usr/share/cmake-4.2/Modules/"
+    found: "/usr/share/cmake-4.2/Modules/CMakeCCompilerId.c.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /usr/bin/arm-none-eabi-gcc 
+      Build flags: -mcpu=cortex-m4;-mthumb;-mfpu=fpv4-sp-d16;-mfloat-abi=hard
+      Id flags: -c 
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+      
+      The C compiler identification is GNU, found in:
+        /home/zaina/AER/APPS-BSPD/build/CMakeFiles/4.2.3/CompilerIdC/CMakeCCompilerId.o
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_AR"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-ar"
+      - "ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-ar"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_RANLIB"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-ranlib"
+      - "ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-ranlib"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_STRIP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-strip"
+      - "strip"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-strip"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_LINKER"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-ld"
+      - "ld"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-ld"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_NM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-nm"
+      - "nm"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-nm"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJDUMP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-objdump"
+      - "objdump"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-objdump"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_READELF"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-readelf"
+      - "readelf"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-readelf"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_DLLTOOL"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-dlltool"
+      - "dlltool"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-dlltool"
+      - "/usr/local/sbin/arm-none-eabi-dlltool"
+      - "/usr/local/bin/arm-none-eabi-dlltool"
+      - "/usr/sbin/arm-none-eabi-dlltool"
+      - "/sbin/arm-none-eabi-dlltool"
+      - "/bin/arm-none-eabi-dlltool"
+      - "/usr/games/arm-none-eabi-dlltool"
+      - "/usr/local/games/arm-none-eabi-dlltool"
+      - "/usr/lib/wsl/lib/arm-none-eabi-dlltool"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-dlltool"
+      - "/mnt/c/WINDOWS/arm-none-eabi-dlltool"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-dlltool"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-dlltool"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-dlltool"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-dlltool"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-dlltool"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-dlltool"
+      - "/snap/bin/arm-none-eabi-dlltool"
+      - "/usr/bin/dlltool"
+      - "/usr/local/sbin/dlltool"
+      - "/usr/local/bin/dlltool"
+      - "/usr/sbin/dlltool"
+      - "/sbin/dlltool"
+      - "/bin/dlltool"
+      - "/usr/games/dlltool"
+      - "/usr/local/games/dlltool"
+      - "/usr/lib/wsl/lib/dlltool"
+      - "/mnt/c/WINDOWS/system32/dlltool"
+      - "/mnt/c/WINDOWS/dlltool"
+      - "/mnt/c/WINDOWS/System32/Wbem/dlltool"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/dlltool"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/dlltool"
+      - "/mnt/c/Program Files/PuTTY/dlltool"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/dlltool"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/dlltool"
+      - "/snap/bin/dlltool"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_ADDR2LINE"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-addr2line"
+      - "addr2line"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    found: "/usr/bin/arm-none-eabi-addr2line"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_TAPI"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-tapi"
+      - "tapi"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-tapi"
+      - "/usr/local/sbin/arm-none-eabi-tapi"
+      - "/usr/local/bin/arm-none-eabi-tapi"
+      - "/usr/sbin/arm-none-eabi-tapi"
+      - "/sbin/arm-none-eabi-tapi"
+      - "/bin/arm-none-eabi-tapi"
+      - "/usr/games/arm-none-eabi-tapi"
+      - "/usr/local/games/arm-none-eabi-tapi"
+      - "/usr/lib/wsl/lib/arm-none-eabi-tapi"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-tapi"
+      - "/mnt/c/WINDOWS/arm-none-eabi-tapi"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-tapi"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-tapi"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-tapi"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-tapi"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-tapi"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-tapi"
+      - "/snap/bin/arm-none-eabi-tapi"
+      - "/usr/bin/tapi"
+      - "/usr/local/sbin/tapi"
+      - "/usr/local/bin/tapi"
+      - "/usr/sbin/tapi"
+      - "/sbin/tapi"
+      - "/bin/tapi"
+      - "/usr/games/tapi"
+      - "/usr/local/games/tapi"
+      - "/usr/lib/wsl/lib/tapi"
+      - "/mnt/c/WINDOWS/system32/tapi"
+      - "/mnt/c/WINDOWS/tapi"
+      - "/mnt/c/WINDOWS/System32/Wbem/tapi"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/tapi"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/tapi"
+      - "/mnt/c/Program Files/PuTTY/tapi"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/tapi"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/tapi"
+      - "/snap/bin/tapi"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc-ar-14.2"
+      - "arm-none-eabi-gcc-ar-14"
+      - "arm-none-eabi-gcc-ar14"
+      - "arm-none-eabi-gcc-ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/sbin/arm-none-eabi-gcc-ar-14.2"
+      - "/sbin/arm-none-eabi-gcc-ar-14.2"
+      - "/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/games/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/local/games/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/snap/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar-14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/sbin/arm-none-eabi-gcc-ar-14"
+      - "/sbin/arm-none-eabi-gcc-ar-14"
+      - "/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/games/arm-none-eabi-gcc-ar-14"
+      - "/usr/local/games/arm-none-eabi-gcc-ar-14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar-14"
+      - "/snap/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/bin/arm-none-eabi-gcc-ar14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar14"
+      - "/usr/sbin/arm-none-eabi-gcc-ar14"
+      - "/sbin/arm-none-eabi-gcc-ar14"
+      - "/bin/arm-none-eabi-gcc-ar14"
+      - "/usr/games/arm-none-eabi-gcc-ar14"
+      - "/usr/local/games/arm-none-eabi-gcc-ar14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar14"
+      - "/snap/bin/arm-none-eabi-gcc-ar14"
+    found: "/usr/bin/arm-none-eabi-gcc-ar"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc-ranlib-14.2"
+      - "arm-none-eabi-gcc-ranlib-14"
+      - "arm-none-eabi-gcc-ranlib14"
+      - "arm-none-eabi-gcc-ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/sbin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/games/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib-14"
+      - "/sbin/arm-none-eabi-gcc-ranlib-14"
+      - "/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/games/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/bin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib14"
+      - "/sbin/arm-none-eabi-gcc-ranlib14"
+      - "/bin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/games/arm-none-eabi-gcc-ranlib14"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib14"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib14"
+    found: "/usr/bin/arm-none-eabi-gcc-ranlib"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompiler.cmake:115 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:71 (_cmake_find_compiler_path)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-g++"
+    candidate_directories:
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/usr/bin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/local/sbin/arm-none-eabi-g++"
+      - "/usr/local/bin/arm-none-eabi-g++"
+      - "/usr/sbin/arm-none-eabi-g++"
+    found: "/usr/bin/arm-none-eabi-g++"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "/usr/share/cmake-4.2/Modules/"
+    found: "/usr/share/cmake-4.2/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/arm-none-eabi-g++ 
+      Build flags: -mcpu=cortex-m4;-mthumb;-mfpu=fpv4-sp-d16;-mfloat-abi=hard
+      Id flags:  
+      
+      The output was:
+      1
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-exit.o): in function `exit':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/stdlib/exit.c:65:(.text+0x14): undefined reference to `_exit'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_exit): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-exit.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/stdlib/exit.c:65:(.text+0x14): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-sbrkr.o): in function `_sbrk_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/sbrkr.c:51:(.text+0xc): undefined reference to `_sbrk'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_sbrk): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-sbrkr.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/sbrkr.c:51:(.text+0xc): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-readr.o): in function `_read_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/readr.c:49:(.text+0x14): undefined reference to `_read'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_read): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-readr.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/readr.c:49:(.text+0x14): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-writer.o): in function `_write_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/writer.c:49:(.text+0x14): undefined reference to `_write'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_write): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-writer.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/writer.c:49:(.text+0x14): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-closer.o): in function `_close_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/closer.c:47:(.text+0xc): undefined reference to `_close'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_close): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-closer.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/closer.c:47:(.text+0xc): dangerous relocation: unsupported relocation
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-lseekr.o): in function `_lseek_r':
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/lseekr.c:49:(.text+0x14): undefined reference to `_lseek'
+      /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/ld: (_lseek): Unknown destination type (ARM/Thumb) in /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a(libc_a-lseekr.o)
+      /build/newlib-Ipb6mw/newlib-4.6.0.20260123/build/arm-none-eabi/thumb/v7e-m+fp/hard/newlib/../../../../../../newlib/libc/reent/lseekr.c:49:(.text+0x14): dangerous relocation: unsupported relocation
+      collect2: error: ld returned 1 exit status
+      
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "/usr/share/cmake-4.2/Modules/"
+    found: "/usr/share/cmake-4.2/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /usr/bin/arm-none-eabi-g++ 
+      Build flags: -mcpu=cortex-m4;-mthumb;-mfpu=fpv4-sp-d16;-mfloat-abi=hard
+      Id flags: -c 
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+      
+      The CXX compiler identification is GNU, found in:
+        /home/zaina/AER/APPS-BSPD/build/CMakeFiles/4.2.3/CompilerIdCXX/CMakeCXXCompilerId.o
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc-ar-14.2"
+      - "arm-none-eabi-gcc-ar-14"
+      - "arm-none-eabi-gcc-ar14"
+      - "arm-none-eabi-gcc-ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/sbin/arm-none-eabi-gcc-ar-14.2"
+      - "/sbin/arm-none-eabi-gcc-ar-14.2"
+      - "/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/games/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/local/games/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/snap/bin/arm-none-eabi-gcc-ar-14.2"
+      - "/usr/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar-14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/sbin/arm-none-eabi-gcc-ar-14"
+      - "/sbin/arm-none-eabi-gcc-ar-14"
+      - "/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/games/arm-none-eabi-gcc-ar-14"
+      - "/usr/local/games/arm-none-eabi-gcc-ar-14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar-14"
+      - "/snap/bin/arm-none-eabi-gcc-ar-14"
+      - "/usr/bin/arm-none-eabi-gcc-ar14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar14"
+      - "/usr/sbin/arm-none-eabi-gcc-ar14"
+      - "/sbin/arm-none-eabi-gcc-ar14"
+      - "/bin/arm-none-eabi-gcc-ar14"
+      - "/usr/games/arm-none-eabi-gcc-ar14"
+      - "/usr/local/games/arm-none-eabi-gcc-ar14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar14"
+      - "/snap/bin/arm-none-eabi-gcc-ar14"
+    found: "/usr/bin/arm-none-eabi-gcc-ar"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc-ranlib-14.2"
+      - "arm-none-eabi-gcc-ranlib-14"
+      - "arm-none-eabi-gcc-ranlib14"
+      - "arm-none-eabi-gcc-ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/sbin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/games/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib-14.2"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib-14.2"
+      - "/usr/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib-14"
+      - "/sbin/arm-none-eabi-gcc-ranlib-14"
+      - "/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/games/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib-14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib-14"
+      - "/usr/bin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib14"
+      - "/sbin/arm-none-eabi-gcc-ranlib14"
+      - "/bin/arm-none-eabi-gcc-ranlib14"
+      - "/usr/games/arm-none-eabi-gcc-ranlib14"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib14"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib14"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib14"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib14"
+    found: "/usr/bin/arm-none-eabi-gcc-ranlib"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompiler.cmake:115 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineASMCompiler.cmake:64 (_cmake_find_compiler_path)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_ASM_COMPILER_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc"
+    candidate_directories:
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/usr/bin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/local/sbin/arm-none-eabi-gcc"
+      - "/usr/local/bin/arm-none-eabi-gcc"
+      - "/usr/sbin/arm-none-eabi-gcc"
+    found: "/usr/bin/arm-none-eabi-gcc"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:1290 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineASMCompiler.cmake:170 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Checking whether the ASM compiler is GNU using "--version" matched "(GNU assembler)|(GCC)|(Free Software Foundation)":
+      arm-none-eabi-gcc (15:14.2.rel1-1) 14.2.1 20241119
+      Copyright (C) 2024 Free Software Foundation, Inc.
+      This is free software; see the source for copying conditions.  There is NO
+      warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineASMCompiler.cmake:268 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_ASM_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc-ar-"
+      - "arm-none-eabi-gcc-ar-"
+      - "arm-none-eabi-gcc-ar"
+      - "arm-none-eabi-gcc-ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar-"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/sbin/arm-none-eabi-gcc-ar-"
+      - "/sbin/arm-none-eabi-gcc-ar-"
+      - "/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/games/arm-none-eabi-gcc-ar-"
+      - "/usr/local/games/arm-none-eabi-gcc-ar-"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar-"
+      - "/snap/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ar-"
+      - "/usr/local/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/sbin/arm-none-eabi-gcc-ar-"
+      - "/sbin/arm-none-eabi-gcc-ar-"
+      - "/bin/arm-none-eabi-gcc-ar-"
+      - "/usr/games/arm-none-eabi-gcc-ar-"
+      - "/usr/local/games/arm-none-eabi-gcc-ar-"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ar-"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ar-"
+      - "/snap/bin/arm-none-eabi-gcc-ar-"
+    found: "/usr/bin/arm-none-eabi-gcc-ar"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineASMCompiler.cmake:268 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_ASM_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "arm-none-eabi-gcc-ranlib-"
+      - "arm-none-eabi-gcc-ranlib-"
+      - "arm-none-eabi-gcc-ranlib"
+      - "arm-none-eabi-gcc-ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/bin/"
+      - "/usr/games/"
+      - "/usr/local/games/"
+      - "/usr/lib/wsl/lib/"
+      - "/mnt/c/WINDOWS/system32/"
+      - "/mnt/c/WINDOWS/"
+      - "/mnt/c/WINDOWS/System32/Wbem/"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/"
+      - "/mnt/c/Program Files/PuTTY/"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "/snap/bin/"
+    searched_directories:
+      - "/usr/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib-"
+      - "/sbin/arm-none-eabi-gcc-ranlib-"
+      - "/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/games/arm-none-eabi-gcc-ranlib-"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib-"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib-"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/local/sbin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/local/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/sbin/arm-none-eabi-gcc-ranlib-"
+      - "/sbin/arm-none-eabi-gcc-ranlib-"
+      - "/bin/arm-none-eabi-gcc-ranlib-"
+      - "/usr/games/arm-none-eabi-gcc-ranlib-"
+      - "/usr/local/games/arm-none-eabi-gcc-ranlib-"
+      - "/usr/lib/wsl/lib/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/system32/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/System32/Wbem/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/WINDOWS/System32/OpenSSH/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/Program Files/PuTTY/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps/arm-none-eabi-gcc-ranlib-"
+      - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin/arm-none-eabi-gcc-ranlib-"
+      - "/snap/bin/arm-none-eabi-gcc-ranlib-"
+    found: "/usr/bin/arm-none-eabi-gcc-ranlib"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/sbin"
+        - "/usr/local/bin"
+        - "/usr/sbin"
+        - "/usr/bin"
+        - "/sbin"
+        - "/bin"
+        - "/usr/games"
+        - "/usr/local/games"
+        - "/usr/lib/wsl/lib"
+        - "/mnt/c/WINDOWS/system32"
+        - "/mnt/c/WINDOWS"
+        - "/mnt/c/WINDOWS/System32/Wbem"
+        - "/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+        - "/mnt/c/WINDOWS/System32/OpenSSH/"
+        - "/mnt/c/Program Files/PuTTY/"
+        - "/mnt/c/Users/zaina/AppData/Local/Microsoft/WindowsApps"
+        - "/mnt/c/Users/zaina/AppData/Local/Programs/Microsoft VS Code/bin"
+        - "/snap/bin"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/usr/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-QRB2sC"
+      binary: "/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-QRB2sC"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -specs=nano.specs -specs=nosys.specs"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-QRB2sC'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_965d2
+        [1/2] /usr/bin/arm-none-eabi-gcc   -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard    -v -o CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake-4.2/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/arm-none-eabi-gcc
+        Target: arm-none-eabi
+        Configured with: ../configure --build=aarch64-linux-gnu --prefix=/usr --includedir='/usr/lib/include' --mandir='/usr/lib/share/man' --infodir='/usr/lib/share/info' --sysconfdir=/etc --localstatedir=/var --disable-option-checking --disable-silent-rules --libdir='/usr/lib/lib/aarch64-linux-gnu' --libexecdir='/usr/lib/lib/aarch64-linux-gnu' --disable-maintainer-mode --disable-dependency-tracking --mandir=/usr/share/man --enable-languages=c,c++,lto --enable-multilib --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --enable-tls --build=aarch64-linux-gnu --target=arm-none-eabi --with-system-zlib --with-gnu-as --with-gnu-ld --with-pkgversion=15:14.2.rel1-1 --without-included-gettext --prefix=/usr/lib --infodir=/usr/share/doc/gcc-arm-none-eabi/info --htmldir=/usr/share/doc/gcc-arm-none-eabi/html --pdfdir=/usr/share/doc/gcc-arm-none-eabi/pdf --bindir=/usr/bin --libexecdir=/usr/lib --libdir=/usr/lib --disable-libstdcxx --host=aarch64-linux-gnu --with-headers=no --without-newlib --with-multilib-list=rmprofile,aprofile ASFLAGS= ASFLAGS_FOR_BUILD= CFLAGS='-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CFLAGS_FOR_BUILD=-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' CPPFLAGS='-Wdate-time -D_FORTIFY_SOURCE=3' 'CPPFLAGS_FOR_BUILD=-Wdate-time -D_FORTIFY_SOURCE=3' CXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' DFLAGS=-frelease DFLAGS_FOR_BUILD=-frelease FCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' FFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' LDFLAGS='-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro' 'LDFLAGS_FOR_BUILD=-flto=auto -ffat-lto-objects -Wl,-z,relro' OBJCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' OBJCXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' RUSTFLAGS=-Cforce-frame-pointers=yes RUSTFLAGS_FOR_BUILD= INHIBIT_LIBC_CFLAGS=-DUSE_TM_CLONE_REGISTRY=0 AR_FOR_TARGET=arm-none-eabi-ar AS_FOR_TARGET=arm-none-eabi-as LD_FOR_TARGET=arm-none-eabi-ld NM_FOR_TARGET=arm-none-eabi-nm OBJDUMP_FOR_TARGET=arm-none-eabi-objdump RANLIB_FOR_TARGET=arm-none-eabi-ranlib READELF_FOR_TARGET=arm-none-eabi-readelf STRIP_FOR_TARGET=arm-none-eabi-strip SED=/bin/sed SHELL=/bin/sh BASH=/bin/bash CONFIG_SHELL=/bin/bash
+        Thread model: single
+        Supported LTO compression algorithms: zlib
+        gcc version 14.2.1 20241119 (15:14.2.rel1-1) 
+        COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_965d2.dir/'
+         /usr/lib/gcc/arm-none-eabi/14.2.1/cc1 -quiet -v -imultilib thumb/v7e-m+fp/hard -D__USES_INITFINI__ /usr/share/cmake-4.2/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_965d2.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mlibarch=armv7e-m+fp -march=armv7e-m+fp -version -o /tmp/ccqS15NL.s
+        GNU C17 (15:14.2.rel1-1) version 14.2.1 20241119 (arm-none-eabi)
+        	compiled by GNU C version 14.2.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.27-GMP
+        
+        warning: MPFR header version 4.2.1 differs from library version 4.2.2.
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/sys-include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib/gcc/arm-none-eabi/14.2.1/include
+         /usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include
+        End of search list.
+        Compiler executable checksum: 435e97f095b331abba374cc886bac828
+        COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_965d2.dir/'
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/as -v -march=armv7e-m+fp -mfloat-abi=hard -mfpu=fpv4-sp-d16 -meabi=5 -o CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj /tmp/ccqS15NL.s
+        GNU assembler version 2.45.50 (arm-none-eabi) using BFD version (2.45.50.20251209-1ubuntu1+23build1) 2.45.50.20251209
+        COMPILER_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/
+        LIBRARY_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.'
+        [2/2] : && /usr/bin/cmake -E rm -f libcmTC_965d2.a && /usr/bin/arm-none-eabi-ar qc libcmTC_965d2.a  CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj && /usr/bin/arm-none-eabi-ranlib libcmTC_965d2.a && :
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/include]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include]
+        end of search list found
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/include] ==> [/usr/lib/gcc/arm-none-eabi/14.2.1/include]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed] ==> [/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include] ==> [/usr/lib/arm-none-eabi/include]
+        implicit include dirs: [/usr/lib/gcc/arm-none-eabi/14.2.1/include;/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed;/usr/lib/arm-none-eabi/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-QRB2sC']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/ninja -v cmTC_965d2]
+        ignore line: [[1/2] /usr/bin/arm-none-eabi-gcc   -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard    -v -o CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake-4.2/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/arm-none-eabi-gcc]
+        ignore line: [Target: arm-none-eabi]
+        ignore line: [Configured with: ../configure --build=aarch64-linux-gnu --prefix=/usr --includedir='/usr/lib/include' --mandir='/usr/lib/share/man' --infodir='/usr/lib/share/info' --sysconfdir=/etc --localstatedir=/var --disable-option-checking --disable-silent-rules --libdir='/usr/lib/lib/aarch64-linux-gnu' --libexecdir='/usr/lib/lib/aarch64-linux-gnu' --disable-maintainer-mode --disable-dependency-tracking --mandir=/usr/share/man --enable-languages=c,c++,lto --enable-multilib --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --enable-tls --build=aarch64-linux-gnu --target=arm-none-eabi --with-system-zlib --with-gnu-as --with-gnu-ld --with-pkgversion=15:14.2.rel1-1 --without-included-gettext --prefix=/usr/lib --infodir=/usr/share/doc/gcc-arm-none-eabi/info --htmldir=/usr/share/doc/gcc-arm-none-eabi/html --pdfdir=/usr/share/doc/gcc-arm-none-eabi/pdf --bindir=/usr/bin --libexecdir=/usr/lib --libdir=/usr/lib --disable-libstdcxx --host=aarch64-linux-gnu --with-headers=no --without-newlib --with-multilib-list=rmprofile,aprofile ASFLAGS= ASFLAGS_FOR_BUILD= CFLAGS='-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CFLAGS_FOR_BUILD=-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' CPPFLAGS='-Wdate-time -D_FORTIFY_SOURCE=3' 'CPPFLAGS_FOR_BUILD=-Wdate-time -D_FORTIFY_SOURCE=3' CXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' DFLAGS=-frelease DFLAGS_FOR_BUILD=-frelease FCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' FFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' LDFLAGS='-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro' 'LDFLAGS_FOR_BUILD=-flto=auto -ffat-lto-objects -Wl,-z,relro' OBJCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' OBJCXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' RUSTFLAGS=-Cforce-frame-pointers=yes RUSTFLAGS_FOR_BUILD= INHIBIT_LIBC_CFLAGS=-DUSE_TM_CLONE_REGISTRY=0 AR_FOR_TARGET=arm-none-eabi-ar AS_FOR_TARGET=arm-none-eabi-as LD_FOR_TARGET=arm-none-eabi-ld NM_FOR_TARGET=arm-none-eabi-nm OBJDUMP_FOR_TARGET=arm-none-eabi-objdump RANLIB_FOR_TARGET=arm-none-eabi-ranlib READELF_FOR_TARGET=arm-none-eabi-readelf STRIP_FOR_TARGET=arm-none-eabi-strip SED=/bin/sed SHELL=/bin/sh BASH=/bin/bash CONFIG_SHELL=/bin/bash]
+        ignore line: [Thread model: single]
+        ignore line: [Supported LTO compression algorithms: zlib]
+        ignore line: [gcc version 14.2.1 20241119 (15:14.2.rel1-1) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_965d2.dir/']
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/cc1 -quiet -v -imultilib thumb/v7e-m+fp/hard -D__USES_INITFINI__ /usr/share/cmake-4.2/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_965d2.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mlibarch=armv7e-m+fp -march=armv7e-m+fp -version -o /tmp/ccqS15NL.s]
+        ignore line: [GNU C17 (15:14.2.rel1-1) version 14.2.1 20241119 (arm-none-eabi)]
+        ignore line: [	compiled by GNU C version 14.2.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.27-GMP]
+        ignore line: []
+        ignore line: [warning: MPFR header version 4.2.1 differs from library version 4.2.2.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/sys-include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/include]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 435e97f095b331abba374cc886bac828]
+        ignore line: [COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_965d2.dir/']
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/as -v -march=armv7e-m+fp -mfloat-abi=hard -mfpu=fpv4-sp-d16 -meabi=5 -o CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj /tmp/ccqS15NL.s]
+        ignore line: [GNU assembler version 2.45.50 (arm-none-eabi) using BFD version (2.45.50.20251209-1ubuntu1+23build1) 2.45.50.20251209]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.']
+        ignore line: [[2/2] : && /usr/bin/cmake -E rm -f libcmTC_965d2.a && /usr/bin/arm-none-eabi-ar qc libcmTC_965d2.a  CMakeFiles/cmTC_965d2.dir/CMakeCCompilerABI.c.obj && /usr/bin/arm-none-eabi-ranlib libcmTC_965d2.a && :]
+        ignore line: []
+        ignore line: []
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/usr/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-FgxhUo"
+      binary: "/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-FgxhUo"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -specs=nano.specs -specs=nosys.specs"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-FgxhUo'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_e6f3f
+        [1/2] /usr/bin/arm-none-eabi-g++   -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard    -v -o CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-4.2/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/arm-none-eabi-g++
+        Target: arm-none-eabi
+        Configured with: ../configure --build=aarch64-linux-gnu --prefix=/usr --includedir='/usr/lib/include' --mandir='/usr/lib/share/man' --infodir='/usr/lib/share/info' --sysconfdir=/etc --localstatedir=/var --disable-option-checking --disable-silent-rules --libdir='/usr/lib/lib/aarch64-linux-gnu' --libexecdir='/usr/lib/lib/aarch64-linux-gnu' --disable-maintainer-mode --disable-dependency-tracking --mandir=/usr/share/man --enable-languages=c,c++,lto --enable-multilib --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --enable-tls --build=aarch64-linux-gnu --target=arm-none-eabi --with-system-zlib --with-gnu-as --with-gnu-ld --with-pkgversion=15:14.2.rel1-1 --without-included-gettext --prefix=/usr/lib --infodir=/usr/share/doc/gcc-arm-none-eabi/info --htmldir=/usr/share/doc/gcc-arm-none-eabi/html --pdfdir=/usr/share/doc/gcc-arm-none-eabi/pdf --bindir=/usr/bin --libexecdir=/usr/lib --libdir=/usr/lib --disable-libstdcxx --host=aarch64-linux-gnu --with-headers=no --without-newlib --with-multilib-list=rmprofile,aprofile ASFLAGS= ASFLAGS_FOR_BUILD= CFLAGS='-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CFLAGS_FOR_BUILD=-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' CPPFLAGS='-Wdate-time -D_FORTIFY_SOURCE=3' 'CPPFLAGS_FOR_BUILD=-Wdate-time -D_FORTIFY_SOURCE=3' CXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' DFLAGS=-frelease DFLAGS_FOR_BUILD=-frelease FCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' FFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' LDFLAGS='-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro' 'LDFLAGS_FOR_BUILD=-flto=auto -ffat-lto-objects -Wl,-z,relro' OBJCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' OBJCXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' RUSTFLAGS=-Cforce-frame-pointers=yes RUSTFLAGS_FOR_BUILD= INHIBIT_LIBC_CFLAGS=-DUSE_TM_CLONE_REGISTRY=0 AR_FOR_TARGET=arm-none-eabi-ar AS_FOR_TARGET=arm-none-eabi-as LD_FOR_TARGET=arm-none-eabi-ld NM_FOR_TARGET=arm-none-eabi-nm OBJDUMP_FOR_TARGET=arm-none-eabi-objdump RANLIB_FOR_TARGET=arm-none-eabi-ranlib READELF_FOR_TARGET=arm-none-eabi-readelf STRIP_FOR_TARGET=arm-none-eabi-strip SED=/bin/sed SHELL=/bin/sh BASH=/bin/bash CONFIG_SHELL=/bin/bash
+        Thread model: single
+        Supported LTO compression algorithms: zlib
+        gcc version 14.2.1 20241119 (15:14.2.rel1-1) 
+        COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_e6f3f.dir/'
+         /usr/lib/gcc/arm-none-eabi/14.2.1/cc1plus -quiet -v -imultilib thumb/v7e-m+fp/hard -D__USES_INITFINI__ /usr/share/cmake-4.2/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e6f3f.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mlibarch=armv7e-m+fp -march=armv7e-m+fp -version -o /tmp/ccnx6ZEK.s
+        GNU C++17 (15:14.2.rel1-1) version 14.2.1 20241119 (arm-none-eabi)
+        	compiled by GNU C version 14.2.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.27-GMP
+        
+        warning: MPFR header version 4.2.1 differs from library version 4.2.2.
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/sys-include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/arm-none-eabi/thumb/v7e-m+fp/hard
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/backward
+         /usr/lib/gcc/arm-none-eabi/14.2.1/include
+         /usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include
+        End of search list.
+        Compiler executable checksum: 9815a964b8402e5f71c400f7f25a334d
+        COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_e6f3f.dir/'
+         /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/as -v -march=armv7e-m+fp -mfloat-abi=hard -mfpu=fpv4-sp-d16 -meabi=5 -o CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj /tmp/ccnx6ZEK.s
+        GNU assembler version 2.45.50 (arm-none-eabi) using BFD version (2.45.50.20251209-1ubuntu1+23build1) 2.45.50.20251209
+        COMPILER_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/
+        LIBRARY_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.'
+        [2/2] : && /usr/bin/cmake -E rm -f libcmTC_e6f3f.a && /usr/bin/arm-none-eabi-ar qc libcmTC_e6f3f.a  CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj && /usr/bin/arm-none-eabi-ranlib libcmTC_e6f3f.a && :
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/arm-none-eabi/thumb/v7e-m+fp/hard]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/backward]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/include]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed]
+          add: [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include]
+        end of search list found
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1] ==> [/usr/lib/arm-none-eabi/include/c++/14.2.1]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/arm-none-eabi/thumb/v7e-m+fp/hard] ==> [/usr/lib/arm-none-eabi/include/c++/14.2.1/arm-none-eabi/thumb/v7e-m+fp/hard]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/backward] ==> [/usr/lib/arm-none-eabi/include/c++/14.2.1/backward]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/include] ==> [/usr/lib/gcc/arm-none-eabi/14.2.1/include]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed] ==> [/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed]
+        collapse include dir [/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include] ==> [/usr/lib/arm-none-eabi/include]
+        implicit include dirs: [/usr/lib/arm-none-eabi/include/c++/14.2.1;/usr/lib/arm-none-eabi/include/c++/14.2.1/arm-none-eabi/thumb/v7e-m+fp/hard;/usr/lib/arm-none-eabi/include/c++/14.2.1/backward;/usr/lib/gcc/arm-none-eabi/14.2.1/include;/usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed;/usr/lib/arm-none-eabi/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/usr/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/home/zaina/AER/APPS-BSPD/build/CMakeFiles/CMakeScratch/TryCompile-FgxhUo']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/ninja -v cmTC_e6f3f]
+        ignore line: [[1/2] /usr/bin/arm-none-eabi-g++   -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard    -v -o CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-4.2/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/arm-none-eabi-g++]
+        ignore line: [Target: arm-none-eabi]
+        ignore line: [Configured with: ../configure --build=aarch64-linux-gnu --prefix=/usr --includedir='/usr/lib/include' --mandir='/usr/lib/share/man' --infodir='/usr/lib/share/info' --sysconfdir=/etc --localstatedir=/var --disable-option-checking --disable-silent-rules --libdir='/usr/lib/lib/aarch64-linux-gnu' --libexecdir='/usr/lib/lib/aarch64-linux-gnu' --disable-maintainer-mode --disable-dependency-tracking --mandir=/usr/share/man --enable-languages=c,c++,lto --enable-multilib --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --enable-tls --build=aarch64-linux-gnu --target=arm-none-eabi --with-system-zlib --with-gnu-as --with-gnu-ld --with-pkgversion=15:14.2.rel1-1 --without-included-gettext --prefix=/usr/lib --infodir=/usr/share/doc/gcc-arm-none-eabi/info --htmldir=/usr/share/doc/gcc-arm-none-eabi/html --pdfdir=/usr/share/doc/gcc-arm-none-eabi/pdf --bindir=/usr/bin --libexecdir=/usr/lib --libdir=/usr/lib --disable-libstdcxx --host=aarch64-linux-gnu --with-headers=no --without-newlib --with-multilib-list=rmprofile,aprofile ASFLAGS= ASFLAGS_FOR_BUILD= CFLAGS='-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CFLAGS_FOR_BUILD=-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' CPPFLAGS='-Wdate-time -D_FORTIFY_SOURCE=3' 'CPPFLAGS_FOR_BUILD=-Wdate-time -D_FORTIFY_SOURCE=3' CXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'CXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' DFLAGS=-frelease DFLAGS_FOR_BUILD=-frelease FCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' FFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'FFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' LDFLAGS='-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro' 'LDFLAGS_FOR_BUILD=-flto=auto -ffat-lto-objects -Wl,-z,relro' OBJCFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' OBJCXXFLAGS='-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard -Wno-format -Wno-error=format-security -fdebug-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=/usr/src/gcc-arm-none-eabi-15:14.2.rel1-1' 'OBJCXXFLAGS_FOR_BUILD=-g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/build/gcc-arm-none-eabi-8GSfNP/gcc-arm-none-eabi-14.2.rel1=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -mbranch-protection=standard' RUSTFLAGS=-Cforce-frame-pointers=yes RUSTFLAGS_FOR_BUILD= INHIBIT_LIBC_CFLAGS=-DUSE_TM_CLONE_REGISTRY=0 AR_FOR_TARGET=arm-none-eabi-ar AS_FOR_TARGET=arm-none-eabi-as LD_FOR_TARGET=arm-none-eabi-ld NM_FOR_TARGET=arm-none-eabi-nm OBJDUMP_FOR_TARGET=arm-none-eabi-objdump RANLIB_FOR_TARGET=arm-none-eabi-ranlib READELF_FOR_TARGET=arm-none-eabi-readelf STRIP_FOR_TARGET=arm-none-eabi-strip SED=/bin/sed SHELL=/bin/sh BASH=/bin/bash CONFIG_SHELL=/bin/bash]
+        ignore line: [Thread model: single]
+        ignore line: [Supported LTO compression algorithms: zlib]
+        ignore line: [gcc version 14.2.1 20241119 (15:14.2.rel1-1) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_e6f3f.dir/']
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/cc1plus -quiet -v -imultilib thumb/v7e-m+fp/hard -D__USES_INITFINI__ /usr/share/cmake-4.2/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e6f3f.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mlibarch=armv7e-m+fp -march=armv7e-m+fp -version -o /tmp/ccnx6ZEK.s]
+        ignore line: [GNU C++17 (15:14.2.rel1-1) version 14.2.1 20241119 (arm-none-eabi)]
+        ignore line: [	compiled by GNU C version 14.2.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.27-GMP]
+        ignore line: []
+        ignore line: [warning: MPFR header version 4.2.1 differs from library version 4.2.2.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/sys-include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/arm-none-eabi/thumb/v7e-m+fp/hard]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include/c++/14.2.1/backward]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/include]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed]
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 9815a964b8402e5f71c400f7f25a334d]
+        ignore line: [COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_e6f3f.dir/']
+        ignore line: [ /usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/as -v -march=armv7e-m+fp -mfloat-abi=hard -mfpu=fpv4-sp-d16 -meabi=5 -o CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj /tmp/ccnx6ZEK.s]
+        ignore line: [GNU assembler version 2.45.50 (arm-none-eabi) using BFD version (2.45.50.20251209-1ubuntu1+23build1) 2.45.50.20251209]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/:/usr/lib/gcc/arm-none-eabi/14.2.1/:/usr/lib/gcc/arm-none-eabi/14.2.1/../../../arm-none-eabi/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=hard' '-v' '-o' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fp' '-march=armv7e-m+fp' '-dumpdir' 'CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [[2/2] : && /usr/bin/cmake -E rm -f libcmTC_e6f3f.a && /usr/bin/arm-none-eabi-ar qc libcmTC_e6f3f.a  CMakeFiles/cmTC_e6f3f.dir/CMakeCXXCompilerABI.cpp.obj && /usr/bin/arm-none-eabi-ranlib libcmTC_e6f3f.a && :]
+        ignore line: []
+        ignore line: []
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+...

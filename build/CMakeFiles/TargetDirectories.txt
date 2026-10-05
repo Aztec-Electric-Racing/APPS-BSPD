@@ -1,0 +1,4 @@
+/home/zaina/AER/APPS-BSPD/build/CMakeFiles/APPS-BSPD.elf.dir
+/home/zaina/AER/APPS-BSPD/build/CMakeFiles/flash.dir
+/home/zaina/AER/APPS-BSPD/build/CMakeFiles/edit_cache.dir
+/home/zaina/AER/APPS-BSPD/build/CMakeFiles/rebuild_cache.dir
