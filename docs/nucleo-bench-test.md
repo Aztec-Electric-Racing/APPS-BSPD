@@ -56,3 +56,6 @@ Also try pressing brake at 10%, then release it: this must not set the latch. Re
 Pass when PB1 changes low at the brake-plus-25% condition, stays low after brake release and while throttle is above 5%, and returns high only at or below 5% with valid APPS inputs. Record firmware revision, calibration counts, APPS voltages, console `STATUS` output, and PB1 voltage for each case.
 
 This bench test does not establish sensor mismatch detection, response time, electrical fault coverage, or the actual vehicle torque-removal behavior. Verify the schematic’s intended MCU pins and output polarity before transferring this logic to the PCB or vehicle.
+
+## Pinout configurations
+![alt text](image.png)
