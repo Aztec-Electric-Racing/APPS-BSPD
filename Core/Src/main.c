@@ -55,8 +55,18 @@ typedef struct
 /* Allowed APPS1/APPS2 disagreement as a fraction of pedal travel (FSAE: 10%) */
 #define SENS_ACCEPTABLE_DIFF    0.10f
 
-/* How often the "USB OK" heartbeat line is printed while a terminal is open */
+/* How often the console heartbeat line is printed when enabled */
 #define HEARTBEAT_PERIOD_MS     1000
+
+/* Nucleo-F446RE bench wiring. Brake switch connects PB0 to GND when pressed.
+ * PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
+#define BRAKE_GPIO_PORT         GPIOB
+#define BRAKE_GPIO_PIN          GPIO_PIN_0
+#define INHIBIT_GPIO_PORT       GPIOB
+#define INHIBIT_GPIO_PIN        GPIO_PIN_1
+#define APPS_TRIP_PERMILLE      250U  /* 25.0% calibrated travel */
+#define APPS_CLEAR_PERMILLE     50U   /* 5.0% calibrated travel */
+#define UART_COMMAND_BUFFER_SIZE 128U
 
 /* Converts ADC/DAC counts to millivolts at the MCU pin (before any external divider) */
 #define COUNTS_TO_MV(c)         ((uint32_t)(c) * 3300U / 4095U)
@@ -72,6 +82,7 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 DAC_HandleTypeDef hdac;
+UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 volatile uint16_t adc_buf[2];   // [0] = PC4, [1] = PC5 (based on rank order)
@@ -91,6 +102,13 @@ uint16_t sens2Range = 0;
 uint32_t dac1Out = 0;
 uint32_t dac2Out = 0;
 uint8_t appsFault = 1;
+uint8_t brakesPressed = 0;
+uint8_t throttleBrakeLatched = 1;
+uint16_t throttlePermille = 0;
+static uint8_t uartRxByte;
+static char uartCommandBuffer[UART_COMMAND_BUFFER_SIZE];
+static uint16_t uartCommandLength = 0U;
+static volatile uint8_t uartCommandReady = 0U;
 
 uint8_t heartbeatEnabled = 0;
 /* USER CODE END PV */
@@ -101,14 +119,19 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void LoadDefaultCalibration(void);
 static uint8_t CalibrationIsValid(void);
 static void UpdateSensorRanges(void);
 static uint32_t ClampDac(int32_t value);
 static uint16_t AdcToSensorCounts(uint16_t adcCounts);
-static void HandleUsbCommand(const char* cmd);
+static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2);
+static void UpdateThrottleBrakeLatch(uint8_t sensorsValid);
+static void HandleConsoleCommand(const char* cmd);
 static void SendStatusLine(const char* prefix);
+static void ConsoleSendString(const char* str);
+static void HandleConsoleInput(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -150,6 +173,34 @@ static uint16_t AdcToSensorCounts(uint16_t adcCounts)
   return (uint16_t)sensorCounts;
 }
 
+/* Normalize each redundant sensor against its own calibrated endpoints. Use
+ * the higher reading so a low-reading channel cannot mask a high throttle. */
+static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2)
+{
+  uint32_t p1 = ((uint32_t)(sensor1 - ee.sens1Lower) * 1000U) / sens1Range;
+  uint32_t p2 = ((uint32_t)(sensor2 - ee.sens2Lower) * 1000U) / sens2Range;
+  uint32_t higher = (p1 > p2) ? p1 : p2;
+  return (uint16_t)((higher > 1000U) ? 1000U : higher);
+}
+
+static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
+{
+  brakesPressed = (HAL_GPIO_ReadPin(BRAKE_GPIO_PORT, BRAKE_GPIO_PIN) == GPIO_PIN_RESET);
+
+  if (!sensorsValid || (brakesPressed && (throttlePermille >= APPS_TRIP_PERMILLE)))
+  {
+    throttleBrakeLatched = 1U;
+  }
+  else if (sensorsValid && (throttlePermille <= APPS_CLEAR_PERMILLE))
+  {
+    throttleBrakeLatched = 0U;
+  }
+
+  /* A bad APPS reading also forces the bench inhibit low. */
+  HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN,
+                    (sensorsValid && !throttleBrakeLatched) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
 static void SendStatusLine(const char* prefix)
 {
   char msg[768];
@@ -165,30 +216,62 @@ static void SendStatusLine(const char* prefix)
   uint32_t minusRef = ClampDac(calibratedOffset - tolerance);
 
   snprintf(msg, sizeof(msg),
-           "%s up %lus | State: %s\r\n"
+           "%s up %lus | APPS: %s | Brake: %s | Throttle: %u.%u%% | Inhibit: %s\r\n"
            "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV)\r\n"
            "APPS sensor-side (divider compensated): APPS1=%lumV [LOW %lumV, HIGH %lumV]; APPS2=%lumV [LOW %lumV, HIGH %lumV]\r\n"
            "APPS_DIFF measured (APPS1-APPS2): %+ldmV | Calibrated +/-10%% refs: PA4 +10%%=%lumV, PA5 -10%%=%lumV\r\n"
            "DAC commands (calculated, not pin feedback): PA4/DAC1=%lu counts (%lumV); PA5/DAC2=%lu counts (%lumV)\r\n\r\n",
            prefix, HAL_GetTick() / 1000, appsFault ? "FAULT" : "OK",
+           brakesPressed ? "PRESSED" : "released", throttlePermille / 10U,
+           throttlePermille % 10U, (HAL_GPIO_ReadPin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN) == GPIO_PIN_RESET) ? "LOW" : "HIGH",
            adc1, COUNTS_TO_MV(adc1), adc2, COUNTS_TO_MV(adc2),
            COUNTS_TO_MV(sensor1), COUNTS_TO_MV(ee.sens1Lower), COUNTS_TO_MV(ee.sens1Upper),
            COUNTS_TO_MV(sensor2), COUNTS_TO_MV(ee.sens2Lower), COUNTS_TO_MV(ee.sens2Upper),
            (long)measuredDiffMv, COUNTS_TO_MV(plusRef), COUNTS_TO_MV(minusRef),
            dac1Out, COUNTS_TO_MV(dac1Out), dac2Out, COUNTS_TO_MV(dac2Out));
-  CDC_SendString(msg);
+  ConsoleSendString(msg);
 }
 
-static void HandleUsbCommand(const char* cmd)
+static void ConsoleSendString(const char* str)
+{
+  size_t length = strlen(str);
+  if (length > 0U)
+  {
+    (void)HAL_UART_Transmit(&huart2, (uint8_t*)str, (uint16_t)length, 100U);
+  }
+  if (UsbPortOpen)
+  {
+    (void)CDC_SendString(str);
+  }
+}
+
+static void HandleConsoleInput(void)
+{
+  if (DataReceivedFlag)
+  {
+    HandleConsoleCommand((const char*)UserRxBuffer);
+    DataReceivedFlag = 0;
+  }
+  if (uartCommandReady)
+  {
+    HandleConsoleCommand(uartCommandBuffer);
+    __disable_irq();
+    uartCommandLength = 0U;
+    uartCommandReady = 0U;
+    __enable_irq();
+  }
+}
+
+static void HandleConsoleCommand(const char* cmd)
 {
   char msg[128];
 
   if (strcmp(cmd, "HELP") == 0)
   {
-    CDC_SendString("Commands:\r\n"
+    ConsoleSendString("Commands:\r\n"
                    "  PING            Reply PONG\r\n"
                    "  READ            Raw ADC counts for APPS1/APPS2\r\n"
-                   "  STATUS          Detailed APPS inputs, limits, differential, and DAC commands\r\n"
+                   "  STATUS          APPS, brake, throttle-latch, limits, and DAC status\r\n"
                    "  GETSAVED        Show saved calibration\r\n"
                    "  SAVE LOWER      Save current pedal position as lower limit\r\n"
                    "  SAVE UPPER      Save current pedal position as upper limit\r\n"
@@ -202,17 +285,17 @@ static void HandleUsbCommand(const char* cmd)
   else if (strcmp(cmd, "HEARTBEAT ON") == 0 || strcmp(cmd, "HEARTBEAT OFF") == 0)
   {
     heartbeatEnabled = (strcmp(cmd, "HEARTBEAT ON") == 0);
-    CDC_SendString(heartbeatEnabled ? "Heartbeat on.\r\n" : "Heartbeat off.\r\n");
+    ConsoleSendString(heartbeatEnabled ? "Heartbeat on.\r\n" : "Heartbeat off.\r\n");
   }
   else if (strcmp(cmd, "PING") == 0)
   {
-    CDC_SendString("PONG\r\n");
+    ConsoleSendString("PONG\r\n");
   }
   else if (strcmp(cmd, "READ") == 0)
   {
     // Read current ADC value and display it
     snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
-    CDC_SendString(msg);
+    ConsoleSendString(msg);
   }
   else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
   {
@@ -234,11 +317,11 @@ static void HandleUsbCommand(const char* cmd)
     if (!CalibrationIsValid())
     {
       ee = previous;
-      CDC_SendString("ERROR: lower must be below upper, calibration not saved.\r\n");
+      ConsoleSendString("ERROR: lower must be below upper, calibration not saved.\r\n");
     }
     else if (!ee_write())
     {
-      CDC_SendString("ERROR: flash write failed.\r\n");
+      ConsoleSendString("ERROR: flash write failed.\r\n");
     }
     else
     {
@@ -246,18 +329,18 @@ static void HandleUsbCommand(const char* cmd)
       snprintf(msg, sizeof(msg), "SAVED %s1=%lu, %s2=%lu\r\n",
                upper ? "Upper" : "Lower", upper ? ee.sens1Upper : ee.sens1Lower,
                upper ? "Upper" : "Lower", upper ? ee.sens2Upper : ee.sens2Lower);
-      CDC_SendString(msg);
+      ConsoleSendString(msg);
     }
   }
   else if (strcmp(cmd, "GETSAVED") == 0)
   {
     snprintf(msg, sizeof(msg), "Saved Upper1=%lu, Saved Upper2=%lu, Saved Lower1=%lu, Saved Lower2=%lu\r\n",
              ee.sens1Upper, ee.sens2Upper, ee.sens1Lower, ee.sens2Lower);
-    CDC_SendString(msg);
+    ConsoleSendString(msg);
   }
   else
   {
-    CDC_SendString("Unknown command. Type HELP.\r\n");
+    ConsoleSendString("Unknown command. Type HELP.\r\n");
   }
 }
 /* USER CODE END 0 */
@@ -292,6 +375,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
+  MX_USART2_UART_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_DAC_Init();
@@ -303,6 +387,7 @@ int main(void)
   HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
 
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2);
+  (void)HAL_UART_Receive_IT(&huart2, &uartRxByte, 1U);
   HAL_Delay(1000);
 
   // Load calibration from flash. Only fall back to (and write) the defaults when
@@ -346,8 +431,11 @@ int main(void)
      *
      * Also for the DAC math I need to account for the voltage divider on the adc and reverse it for the DAC output. It shouldn't be
      * that high so reversing it should be fine*/
-    if ((ee.sens1Lower <= s1) && (s1 <= ee.sens1Upper) && (ee.sens2Lower <= s2) && (s2 <= ee.sens2Upper))
+    uint8_t sensorsValid = ((ee.sens1Lower <= s1) && (s1 <= ee.sens1Upper) &&
+                            (ee.sens2Lower <= s2) && (s2 <= ee.sens2Upper));
+    if (sensorsValid)
     {
+      throttlePermille = GetThrottlePermille(s1, s2);
       int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
       int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
       dac1Out = ClampDac(offset + tolerance);
@@ -356,26 +444,24 @@ int main(void)
     }
     else
     {
+      throttlePermille = 0U;
       // Out of range: drive both outputs to 0 V (DAC counts 0-4095 map to 0-3.3 V)
       dac1Out = 0;
       dac2Out = 0;
       appsFault = 1;
     }
+    UpdateThrottleBrakeLatch(sensorsValid);
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out); //PA4
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out); //PA5
 
     // USB output is command-driven by default; no automatic banner or heartbeat.
-    if (UsbPortOpen && heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
+    if (heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
     {
       lastHeartbeat = HAL_GetTick();
-      SendStatusLine("[USB OK]");
+      SendStatusLine("[CONSOLE]");
     }
 
-    if (DataReceivedFlag)
-    {
-      HandleUsbCommand((const char*)UserRxBuffer);
-      DataReceivedFlag = 0;
-    }
+    HandleConsoleInput();
   }
   /* USER CODE END 3 */
 }
@@ -421,6 +507,25 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief USART2 initialization for the Nucleo ST-LINK virtual COM port.
+  */
+static void MX_USART2_UART_Init(void)
+{
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -568,6 +673,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /* Brake switch is active-low; PB0 has a pull-up for a safe open-wire state. */
+  GPIO_InitStruct.Pin = BRAKE_GPIO_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BRAKE_GPIO_PORT, &GPIO_InitStruct);
+
+  /* Set the low-true inhibit before configuring PB1 as an output. */
+  HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN, GPIO_PIN_RESET);
+  GPIO_InitStruct.Pin = INHIBIT_GPIO_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(INHIBIT_GPIO_PORT, &GPIO_InitStruct);
+
   /*Configure GPIO pin : PB5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -589,6 +708,37 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
         apps1 = adc_buf[0];   // PC4
         apps2 = adc_buf[1];   // PC5
     }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
+{
+  if (huart->Instance == USART2)
+  {
+    uint8_t c = uartRxByte;
+    if (!uartCommandReady)
+    {
+      if (c == '\n')
+      {
+        if (uartCommandLength > 0U)
+        {
+          uartCommandBuffer[uartCommandLength] = '\0';
+          uartCommandReady = 1U;
+        }
+      }
+      else if (c != '\r')
+      {
+        if (uartCommandLength < UART_COMMAND_BUFFER_SIZE - 1U)
+        {
+          uartCommandBuffer[uartCommandLength++] = (char)c;
+        }
+        else
+        {
+          uartCommandLength = 0U; /* Drop an overlong line. */
+        }
+      }
+    }
+    (void)HAL_UART_Receive_IT(&huart2, &uartRxByte, 1U);
+  }
 }
 /* USER CODE END 4 */
 
