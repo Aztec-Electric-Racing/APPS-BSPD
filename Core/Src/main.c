@@ -120,7 +120,7 @@ static char uartCommandBuffer[UART_COMMAND_BUFFER_SIZE];
 static uint16_t uartCommandLength = 0U;
 static volatile uint8_t uartCommandReady = 0U;
 
-uint8_t heartbeatEnabled = 0;
+uint8_t heartbeatEnabled = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -498,11 +498,19 @@ int main(void)
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out); //PA4
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out); //PA5
 
-    // USB output is command-driven by default; no automatic banner or heartbeat.
+    // Greet USB CDC terminals when they open, even if the firmware booted first.
+    if (UsbPortJustOpened)
+    {
+      UsbPortJustOpened = 0U;
+      (void)CDC_SendString("\r\n=== AER APPS-BSPD firmware, built " __DATE__ " " __TIME__ " ===\r\n"
+                           "USB serial OK. Type HELP for commands.\r\n");
+      SendStatusLine("[USB OK]");
+    }
+
     if (heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
     {
       lastHeartbeat = HAL_GetTick();
-      SendStatusLine("[CONSOLE]");
+      SendStatusLine(UsbPortOpen ? "[USB OK]" : "[CONSOLE]");
     }
 
     HandleConsoleInput();

@@ -104,6 +104,7 @@ extern volatile uint8_t DataReceivedFlag;
 
 /* Set while a terminal has the COM port open (DTR asserted). */
 extern volatile uint8_t UsbPortOpen;
+extern volatile uint8_t UsbPortJustOpened;
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**
