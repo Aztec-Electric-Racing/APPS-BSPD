@@ -9,7 +9,7 @@ Firmware for AER's accelerator pedal position sensor (APPS) board. It reads two 
 > 
 > - [**🌐 MAIN LOOP LOGIC**](FIRMWARE_NOTES/overview_and_logic.md)
 > - [**⚙️ CHANGES BETWEEN BRANCHES**](FIRMWARE_NOTES/usb-fix-changes.md)
-> - [**📋 GITHUB LOG FOR MAIN.C CHANGES**](FIRMWARE_NOTES/main-changes.md)
+> - [**📋 GITHUB LOG FOR MAIN.C CHANGES**](FIRMWARE_NOTES/main-changes.txt)
 > 
 > 
 
