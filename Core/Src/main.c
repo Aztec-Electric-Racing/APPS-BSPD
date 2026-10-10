@@ -411,6 +411,19 @@ int main(void)
   uint32_t lastHeartbeat = HAL_GetTick();
   /* USER CODE END 2 */
 
+
+  /*
+   *--------------------------------------------------------------
+   *
+   *
+   *
+   *                     MAIN LOOP (INFINITE)
+   *
+   *
+   *
+   *---------------------------------------------------------------
+   */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
