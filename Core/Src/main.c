@@ -59,8 +59,12 @@ typedef struct
 /* How often the console heartbeat line is printed when enabled */
 #define HEARTBEAT_PERIOD_MS     1000
 
-/* Adjust this threshold to the bench brake sensor's released/pressed voltages. */
-#define BRAKE_ENGAGED_COUNTS    1024U
+/* BRAKEREF was measured at 0.49 V released and 1.24 V engaged.
+ * Switch at their midpoint, expressed as 12-bit ADC counts at 3.3 V full scale. */
+#define BRAKE_RELEASED_MV       490U
+#define BRAKE_ENGAGED_MV        1240U
+#define BRAKE_THRESHOLD_MV      ((BRAKE_RELEASED_MV + BRAKE_ENGAGED_MV) / 2U)
+#define BRAKE_ENGAGED_COUNTS    ((BRAKE_THRESHOLD_MV * ADC_MAX_COUNTS + 1650U) / 3300U)
 /* PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
 #define INHIBIT_GPIO_PORT       GPIOB
 #define INHIBIT_GPIO_PIN        GPIO_PIN_1
