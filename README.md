@@ -2,6 +2,17 @@
 
 Firmware for AER's accelerator pedal position sensor (APPS) board. It reads two pedal sensors on an STM32F446RCT6, checks each reading against saved limits, and sets two DAC outputs. USB commands let you read the sensor values and save calibration limits.
 
+## Changes Between Main Branch & Benchtest Branch
+
+### Please see the following links below for notes on changes as well as the main loop logic
+>
+> 
+> - [**🌐 MAIN LOOP LOGIC**](FIRMWARE_NOTES/overview_and_logic.md)
+> - [**⚙️ CHANGES BETWEEN BRANCHES**](FIRMWARE_NOTES/usb-fix-changes.md)
+> - [**📋 GITHUB LOG FOR MAIN.C CHANGES**](FIRMWARE_NOTES/main-changes.md)
+> 
+> 
+
 ## Board and signals
 
 | Signal | MCU pin | Use |
