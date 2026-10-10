@@ -120,7 +120,7 @@ static char uartCommandBuffer[UART_COMMAND_BUFFER_SIZE];
 static uint16_t uartCommandLength = 0U;
 static volatile uint8_t uartCommandReady = 0U;
 
-uint8_t heartbeatEnabled = 1;
+uint8_t heartbeatEnabled = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -504,7 +504,6 @@ int main(void)
       UsbPortJustOpened = 0U;
       (void)CDC_SendString("\r\n=== AER APPS-BSPD firmware, built " __DATE__ " " __TIME__ " ===\r\n"
                            "USB serial OK. Type HELP for commands.\r\n");
-      SendStatusLine("[USB OK]");
     }
 
     if (heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
