@@ -80,6 +80,7 @@ set(OLD_GLOB
   "/home/zaina/AER/APPS-BSPD/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c"
   "/home/zaina/AER/APPS-BSPD/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c"
   "/home/zaina/AER/APPS-BSPD/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c"
+  "/home/zaina/AER/APPS-BSPD/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c"
   "/home/zaina/AER/APPS-BSPD/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c"
   "/home/zaina/AER/APPS-BSPD/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c"
   )
