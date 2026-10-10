@@ -422,6 +422,8 @@ int main(void)
   }
   UpdateSensorRanges();
 
+  ConsoleSendString("USART2 console ready (115200 8N1). Type HELP and press Enter.\r\n");
+
   /*IMPORTANT: Should probably move off of Emulated EEPROM to save memory life. I was reasearching
    * and it seemed as if there was a way to write to flash as long as it was empty. Just have a bunch of
    * indexed entries in the sector and only erase it and rewrite once it is full. Use the highest indexed value.
@@ -756,7 +758,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
     uint8_t c = uartRxByte;
     if (!uartCommandReady)
     {
-      if (c == '\n')
+      if ((c == '\r') || (c == '\n'))
       {
         if (uartCommandLength > 0U)
         {
