@@ -15,7 +15,7 @@ Firmware for AER's accelerator pedal position sensor (APPS) board. It reads two 
 
 ## Software Testing
 
-> See [Testing Documentation](tests.README.md) for documentation about testing software.
+> See [Testing Documentation](tests/README.md) for documentation about testing software.
 
 ## Board and signals
 
