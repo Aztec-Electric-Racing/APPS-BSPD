@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
+#include "apps_conversion.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -54,14 +55,18 @@ typedef struct
 
 /* Allowed APPS1/APPS2 disagreement as a fraction of pedal travel (FSAE: 10%) */
 #define SENS_ACCEPTABLE_DIFF    0.10f
+#define APPS_MISMATCH_TIME_MS   100U
 
 /* How often the console heartbeat line is printed when enabled */
 #define HEARTBEAT_PERIOD_MS     1000
 
-/* Nucleo-F446RE bench wiring. Brake switch connects PB0 to GND when pressed.
- * PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
-#define BRAKE_GPIO_PORT         GPIOB
-#define BRAKE_GPIO_PIN          GPIO_PIN_0
+/* BRAKEREF was measured at 0.49 V released and 1.24 V engaged.
+ * Switch at their midpoint, expressed as 12-bit ADC counts at 3.3 V full scale. */
+#define BRAKE_RELEASED_MV       490U
+#define BRAKE_ENGAGED_MV        1240U
+#define BRAKE_THRESHOLD_MV      ((BRAKE_RELEASED_MV + BRAKE_ENGAGED_MV) / 2U)
+#define BRAKE_ENGAGED_COUNTS    ((BRAKE_THRESHOLD_MV * ADC_MAX_COUNTS + 1650U) / 3300U)
+/* PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
 #define INHIBIT_GPIO_PORT       GPIOB
 #define INHIBIT_GPIO_PIN        GPIO_PIN_1
 #define APPS_TRIP_PERMILLE      250U  /* 25.0% calibrated travel */
@@ -85,9 +90,10 @@ DAC_HandleTypeDef hdac;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-volatile uint16_t adc_buf[2];   // [0] = PC4, [1] = PC5 (based on rank order)
+volatile uint16_t adc_buf[3];   // [0] = PC4/APPS1, [1] = PC5/APPS2, [2] = PA1/brake
 volatile uint16_t apps1 = 0;
 volatile uint16_t apps2 = 0;
+volatile uint16_t brakeAdc = 0;
 uint16_t checkedApps1 = 0;
 uint16_t checkedApps2 = 0;
 
@@ -105,6 +111,11 @@ uint8_t appsFault = 1;
 uint8_t brakesPressed = 0;
 uint8_t throttleBrakeLatched = 1;
 uint16_t throttlePermille = 0;
+uint16_t apps1Permille = 0;
+uint16_t apps2Permille = 0;
+uint16_t brakePermille = 0;
+static uint8_t appsMismatchTiming = 0U;
+static uint32_t appsMismatchStartTick = 0U;
 static uint8_t uartRxByte;
 static char uartCommandBuffer[UART_COMMAND_BUFFER_SIZE];
 static uint16_t uartCommandLength = 0U;
@@ -127,6 +138,7 @@ static void UpdateSensorRanges(void);
 static uint32_t ClampDac(int32_t value);
 static uint16_t AdcToSensorCounts(uint16_t adcCounts);
 static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2);
+static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range);
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid);
 static void HandleConsoleCommand(const char* cmd);
 static void SendStatusLine(const char* prefix);
@@ -157,6 +169,11 @@ static void UpdateSensorRanges(void)
   sens2Range = (uint16_t)abs((int32_t)ee.sens2Upper - (int32_t)ee.sens2Lower);
 }
 
+/*
+ *
+ *  OUTPUT LOGIC
+ *
+ */
 static uint32_t ClampDac(int32_t value)
 {
   if (value < 0) return 0;
@@ -164,30 +181,31 @@ static uint32_t ClampDac(int32_t value)
   return (uint32_t)value;
 }
 
-static uint16_t AdcToSensorCounts(uint16_t adcCounts)
-{
-  uint32_t sensorCounts = ((uint32_t)adcCounts * APPS_INPUT_DIVIDER_DEN +
-                           (APPS_INPUT_DIVIDER_NUM / 2U)) /
-                          APPS_INPUT_DIVIDER_NUM;
-  if (sensorCounts > ADC_MAX_COUNTS) sensorCounts = ADC_MAX_COUNTS;
-  return (uint16_t)sensorCounts;
-}
 
 /* Normalize each redundant sensor against its own calibrated endpoints. Use
  * the higher reading so a low-reading channel cannot mask a high throttle. */
 static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2)
 {
-  uint32_t p1 = ((uint32_t)(sensor1 - ee.sens1Lower) * 1000U) / sens1Range;
-  uint32_t p2 = ((uint32_t)(sensor2 - ee.sens2Lower) * 1000U) / sens2Range;
+  uint32_t p1 = GetSensorPermille(sensor1, ee.sens1Lower, sens1Range);
+  uint32_t p2 = GetSensorPermille(sensor2, ee.sens2Lower, sens2Range);
   uint32_t higher = (p1 > p2) ? p1 : p2;
   return (uint16_t)((higher > 1000U) ? 1000U : higher);
 }
 
+static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range)
+{
+  if ((range == 0U) || (sensor <= lower)) return 0U;
+  uint32_t permille = ((uint32_t)(sensor - lower) * 1000U) / range;
+  return (uint16_t)((permille > 1000U) ? 1000U : permille);
+}
+
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
 {
-  brakesPressed = (HAL_GPIO_ReadPin(BRAKE_GPIO_PORT, BRAKE_GPIO_PIN) == GPIO_PIN_RESET);
+  uint16_t brake = brakeAdc;
+  brakesPressed = (brake >= BRAKE_ENGAGED_COUNTS);
+  brakePermille = (uint16_t)(((uint32_t)brake * 1000U) / ADC_MAX_COUNTS);
 
-  if (!sensorsValid || (brakesPressed && (throttlePermille >= APPS_TRIP_PERMILLE)))
+  if (!sensorsValid || appsFault || (brakesPressed && (throttlePermille >= APPS_TRIP_PERMILLE)))
   {
     throttleBrakeLatched = 1U;
   }
@@ -216,15 +234,17 @@ static void SendStatusLine(const char* prefix)
   uint32_t minusRef = ClampDac(calibratedOffset - tolerance);
 
   snprintf(msg, sizeof(msg),
-           "%s up %lus | APPS: %s | Brake: %s | Throttle: %u.%u%% | Inhibit: %s\r\n"
-           "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV)\r\n"
+           "%s up %lus | APPS: %s | Brake: %s (%u.%u%%) | APPS1: %u.%u%% | APPS2: %u.%u%% | Throttle: %u.%u%% | Inhibit: %s\r\n"
+           "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV), PA1/Brake=%u counts\r\n"
            "APPS sensor-side (divider compensated): APPS1=%lumV [LOW %lumV, HIGH %lumV]; APPS2=%lumV [LOW %lumV, HIGH %lumV]\r\n"
            "APPS_DIFF measured (APPS1-APPS2): %+ldmV | Calibrated +/-10%% refs: PA4 +10%%=%lumV, PA5 -10%%=%lumV\r\n"
            "DAC commands (calculated, not pin feedback): PA4/DAC1=%lu counts (%lumV); PA5/DAC2=%lu counts (%lumV)\r\n\r\n",
            prefix, HAL_GetTick() / 1000, appsFault ? "FAULT" : "OK",
-           brakesPressed ? "PRESSED" : "released", throttlePermille / 10U,
-           throttlePermille % 10U, (HAL_GPIO_ReadPin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN) == GPIO_PIN_RESET) ? "LOW" : "HIGH",
-           adc1, COUNTS_TO_MV(adc1), adc2, COUNTS_TO_MV(adc2),
+           brakesPressed ? "PRESSED" : "released", brakePermille / 10U, brakePermille % 10U,
+           apps1Permille / 10U, apps1Permille % 10U, apps2Permille / 10U, apps2Permille % 10U,
+           throttlePermille / 10U, throttlePermille % 10U,
+           (HAL_GPIO_ReadPin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN) == GPIO_PIN_RESET) ? "LOW" : "HIGH",
+           adc1, COUNTS_TO_MV(adc1), adc2, COUNTS_TO_MV(adc2), brakeAdc,
            COUNTS_TO_MV(sensor1), COUNTS_TO_MV(ee.sens1Lower), COUNTS_TO_MV(ee.sens1Upper),
            COUNTS_TO_MV(sensor2), COUNTS_TO_MV(ee.sens2Lower), COUNTS_TO_MV(ee.sens2Upper),
            (long)measuredDiffMv, COUNTS_TO_MV(plusRef), COUNTS_TO_MV(minusRef),
@@ -294,7 +314,7 @@ static void HandleConsoleCommand(const char* cmd)
   else if (strcmp(cmd, "READ") == 0)
   {
     // Read current ADC value and display it
-    snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
+    snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u, Brake=%u\r\n", apps1, apps2, brakeAdc);
     ConsoleSendString(msg);
   }
   else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
@@ -313,6 +333,12 @@ static void HandleConsoleCommand(const char* cmd)
       ee.sens1Lower = AdcToSensorCounts(apps1);
       ee.sens2Lower = AdcToSensorCounts(apps2);
     }
+
+    /*
+    *
+    * RANGE VALIDATION
+    *
+    */
 
     if (!CalibrationIsValid())
     {
@@ -386,7 +412,7 @@ int main(void)
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
 
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 3); // Stats continuous DMA conversion into adc_buf[2]
   (void)HAL_UART_Receive_IT(&huart2, &uartRxByte, 1U);
   HAL_Delay(1000);
 
@@ -404,25 +430,14 @@ int main(void)
   }
   UpdateSensorRanges();
 
+  ConsoleSendString("USART2 console ready (115200 8N1). Type HELP and press Enter.\r\n");
+
   /*IMPORTANT: Should probably move off of Emulated EEPROM to save memory life. I was reasearching
    * and it seemed as if there was a way to write to flash as long as it was empty. Just have a bunch of
    * indexed entries in the sector and only erase it and rewrite once it is full. Use the highest indexed value.
    * Currently the EEPROM has to erase every time we write I believe even though we only use a small amount of the sector most likely */
   uint32_t lastHeartbeat = HAL_GetTick();
   /* USER CODE END 2 */
-
-
-  /*
-   *--------------------------------------------------------------
-   *
-   *
-   *
-   *                     MAIN LOOP (INFINITE)
-   *
-   *
-   *
-   *---------------------------------------------------------------
-   */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -444,34 +459,72 @@ int main(void)
      *
      * Also for the DAC math I need to account for the voltage divider on the adc and reverse it for the DAC output. It shouldn't be
      * that high so reversing it should be fine*/
+
+    /*
+     *
+     *
+     *    RANGE VALIDATION
+     *    CHECKS SENSOR LIMITS
+     *
+     *
+     */
+
+
     uint8_t sensorsValid = ((ee.sens1Lower <= s1) && (s1 <= ee.sens1Upper) &&
                             (ee.sens2Lower <= s2) && (s2 <= ee.sens2Upper));
     if (sensorsValid)
     {
+      apps1Permille = GetSensorPermille(s1, ee.sens1Lower, sens1Range);
+      apps2Permille = GetSensorPermille(s2, ee.sens2Lower, sens2Range);
       throttlePermille = GetThrottlePermille(s1, s2);
+      uint16_t mismatch = (apps1Permille > apps2Permille) ?
+                          (apps1Permille - apps2Permille) : (apps2Permille - apps1Permille);
+      if (mismatch > (uint16_t)(SENS_ACCEPTABLE_DIFF * 1000.0f))
+      {
+        if (!appsMismatchTiming)
+        {
+          appsMismatchTiming = 1U;
+          appsMismatchStartTick = HAL_GetTick();
+        }
+        appsFault = ((HAL_GetTick() - appsMismatchStartTick) > APPS_MISMATCH_TIME_MS); // fault management
+      }
+      else
+      {
+        appsMismatchTiming = 0U;
+        appsFault = 0U;
+      }
       int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
       int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
       dac1Out = ClampDac(offset + tolerance);
       dac2Out = ClampDac(offset - tolerance);
-      appsFault = 0;
     }
     else
     {
       throttlePermille = 0U;
+      apps1Permille = 0U;
+      apps2Permille = 0U;
+      appsMismatchTiming = 0U;
       // Out of range: drive both outputs to 0 V (DAC counts 0-4095 map to 0-3.3 V)
       dac1Out = 0;
       dac2Out = 0;
       appsFault = 1;
     }
-    UpdateThrottleBrakeLatch(sensorsValid);
+    UpdateThrottleBrakeLatch(sensorsValid); // fault management
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out); //PA4
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out); //PA5
 
-    // USB output is command-driven by default; no automatic banner or heartbeat.
+    // Greet USB CDC terminals when they open, even if the firmware booted first.
+    if (UsbPortJustOpened)
+    {
+      UsbPortJustOpened = 0U;
+      (void)CDC_SendString("\r\n=== AER APPS-BSPD firmware, built " __DATE__ " " __TIME__ " ===\r\n"
+                           "USB serial OK. Type HELP for commands.\r\n");
+    }
+
     if (heartbeatEnabled && (HAL_GetTick() - lastHeartbeat >= HEARTBEAT_PERIOD_MS))
     {
       lastHeartbeat = HAL_GetTick();
-      SendStatusLine("[CONSOLE]");
+      SendStatusLine(UsbPortOpen ? "[USB OK]" : "[CONSOLE]");
     }
 
     HandleConsoleInput();
@@ -489,6 +542,14 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
+   *
+   *
+   *
+   *    ADC CONVERSION || HARDWARE SETUP
+   *   12-bit, scan mode, continuous, DMA, PC4 on channel 14 (rank 1), PC5 on channel 15 (rank 2)
+   *
+   *
+   *
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
@@ -573,7 +634,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 2;
+  hadc1.Init.NbrOfConversion = 3;
   hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -586,6 +647,12 @@ static void MX_ADC1_Init(void)
   sConfig.Channel = ADC_CHANNEL_14;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Rank = 3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -686,12 +753,6 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /* Brake switch is active-low; PB0 has a pull-up for a safe open-wire state. */
-  GPIO_InitStruct.Pin = BRAKE_GPIO_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(BRAKE_GPIO_PORT, &GPIO_InitStruct);
-
   /* Set the low-true inhibit before configuring PB1 as an output. */
   HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN, GPIO_PIN_RESET);
   GPIO_InitStruct.Pin = INHIBIT_GPIO_PIN;
@@ -720,6 +781,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     {
         apps1 = adc_buf[0];   // PC4
         apps2 = adc_buf[1];   // PC5
+        brakeAdc = adc_buf[2]; // PA1
     }
 }
 
@@ -730,7 +792,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
     uint8_t c = uartRxByte;
     if (!uartCommandReady)
     {
-      if (c == '\n')
+      if ((c == '\r') || (c == '\n'))
       {
         if (uartCommandLength > 0U)
         {

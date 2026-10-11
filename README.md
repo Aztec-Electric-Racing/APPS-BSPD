@@ -13,6 +13,10 @@ Firmware for AER's accelerator pedal position sensor (APPS) board. It reads two 
 > 
 > 
 
+## Software Testing
+
+> See [Testing Documentation](tests.README.md) for documentation about testing software.
+
 ## Board and signals
 
 | Signal | MCU pin | Use |
@@ -28,6 +32,10 @@ Firmware for AER's accelerator pedal position sensor (APPS) board. It reads two 
 The project is configured for an 8 MHz crystal and a 30 MHz system clock. The APPS code assumes the input divider passes 72% of the sensor voltage. Check the schematic and measure the board before relying on these values.
 
 For the Nucleo-F446RE bench setup, APPS inputs are on the Morpho headers (PC4 at CN10 pin 34, PC5 at CN10 pin 6). Use PB0 at CN7 pin 34 for the brake switch and PB1 at CN10 pin 24 for the active-low inhibit output. The Nucleo's ST-LINK USB connector provides the console through USART2's virtual COM port (PA2/PA3), at 115200 8N1. This is separate from the custom APPS PCB's USB-device interface.
+
+## Testing Enviornment
+
+Tested on Unity v2.7.0
 
 ## Build and flash
 
