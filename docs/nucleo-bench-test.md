@@ -6,9 +6,9 @@ The Nucleo wiring below is a bench harness. It is not a claim that the custom AP
 
 ## What this test is intended to show
 
-The firmware samples two analog APPS inputs and converts each sample into a calibrated pedal percentage. It also samples the analog brake signal on PA1. The measured BRAKEREF voltage is approximately 0.49 V with the brake released and 1.24 V engaged. Firmware classifies brake as engaged above the midpoint, 0.865 V (about 1073 ADC counts with a 3.3 V ADC reference). When brake is engaged while APPS demand is at least 25%, the firmware latches an **inhibit request** on PB1. PB1 stays low after the brake is released until both APPS readings are valid and demand is at or below 5%.
+The firmware samples two analog APPS inputs and converts each sample into a calibrated pedal percentage. It also samples the analog brake signal on PA1. The measured BRAKEREF voltage is approximately 0.49 V with the brake released and 1.24 V engaged. Firmware classifies brake as engaged at or above the midpoint, 0.865 V (about 1073 ADC counts with a 3.3 V ADC reference). If brake is engaged while APPS demand is **more than 25%**, the firmware latches a shutdown request. The same latch sets for an out-of-range APPS input or a sensor disagreement greater than 10 percentage points lasting more than 100 ms. PB1 stays low until both APPS readings are valid, no mismatch fault is active, and demand is **less than 5%**; brake state does not affect clearing.
 
-PB1 is only a logic output during this test. Low means “inhibit requested”; high means “inhibit released.” A meter, LED circuit, or scope can show the signal changing, but none of those makes the motor stop. The DAC outputs are a separate pair of outputs and are not forced to zero by the brake latch. The DAC commands go to zero for an APPS out-of-range fault.
+PB1 is only a logic output during this test. Low means “shutdown requested”; high means “shutdown released.” A meter, LED circuit, or scope can show the signal changing, but none of those makes a motor stop. While shutdown is latched, both DAC command outputs are set to zero. Healthy-state DAC values retain the existing bench reference behavior; they are not a validated motor torque command. This bench test does not establish vehicle motor shutdown.
 
 ## Bench connections
 
@@ -61,7 +61,7 @@ For this bench setup, choose a high endpoint below approximately **2.37 V** (for
 4. With both inputs still at their released endpoints, send `SAVE LOWER`.
 5. Set each source to its chosen full-travel endpoint (`V1_high`, `V2_high`) and send `SAVE UPPER`.
 6. Send `GETSAVED` and record all four saved values. Send `STATUS`; check that APPS is `OK` and throttle is approximately 100% at the upper endpoints.
-7. Return both inputs to their low endpoints. Send `STATUS`. The startup inhibit latch should now clear because valid throttle is at or below 5%; confirm `Inhibit: HIGH` and measure PB1 high.
+7. Return both inputs to their low endpoints. Send `STATUS`. The startup inhibit latch should now clear because valid throttle is below 5%; confirm `Inhibit: HIGH` and measure PB1 high.
 
 `SAVE LOWER` and `SAVE UPPER` write calibration to flash. Do not send them repeatedly during the functional cases. Select repeatable endpoints with enough room below the 2.37 V compensation limit and enough room above the upper endpoint for over-range tests. If a save says the calibration is invalid, the lower value for that sensor is not below its upper value; correct the source settings and recalibrate.
 
@@ -74,33 +74,47 @@ For each percentage row, use the interpolation formula above to set **both** sou
 | Establish clear state | APPS1 = 0%; APPS2 = 0%; BRAKEREF about 0.49 V | APPS `OK`, throttle about 0.0%, latch clears, `Inhibit: HIGH`, PB1 high |
 | Normal released | Keep both at 0%; BRAKEREF about 0.49 V | Same as above; this is the normal released-pedal state |
 | Brake below trip point | Set both to 24%; set BRAKEREF to about 1.24 V; send `STATUS` | Brake `PRESSED`; no new trip; if latch was already clear, `Inhibit: HIGH`, PB1 high |
-| Brake at the implemented trip boundary | Set both to about 25%; set BRAKEREF to about 1.24 V. Adjust APPS slightly until `STATUS` reports at least 25.0% | Current code trips when its integer throttle value reaches **250 permille** or higher: latch sets, `Inhibit: LOW`, PB1 low. ADC and integer rounding may require slightly more than a dial-calculated 25.0% |
-| Brake above trip point | Set both to 30%; set BRAKEREF to about 1.24 V | Latch sets, `Inhibit: LOW`, PB1 low. DAC commands may remain nonzero because the APPS readings are still valid |
+| Brake at exactly 25% | Set both to 25%; set BRAKEREF to about 1.24 V | No trip at exactly 250 permille. Increase slightly above 25% to demonstrate the trip; ADC quantization may affect the boundary |
+| Brake above trip point | Set both to 30%; set BRAKEREF to about 1.24 V | Latch sets, `Inhibit: LOW`, PB1 low, and both DAC commands become zero |
 | Brake released, throttle still high | After a trip, set BRAKEREF back to about 0.49 V but keep both APPS inputs at 30% | Brake reports `released`; latch remains set; PB1 remains low |
 | Latch hold above clear point | Keep BRAKEREF at about 0.49 V; set both to 6%, then 10% | Latch remains set and PB1 stays low because throttle is above 5% |
-| Clear latch | Keep BRAKEREF at about 0.49 V; set both inputs to 4% | Current code clears at **5.0% or below** (`<= 50` permille); PB1 returns high |
+| Clear latch | Keep BRAKEREF either released or engaged; set both inputs to 4% | Latch clears below 5% (`< 50` permille); PB1 returns high regardless of brake |
 | APPS below calibrated range | From a cleared state, set either one channel just below its saved lower endpoint; keep the other channel in range | APPS `FAULT`; DAC commands become zero; latch sets; PB1 low |
 | APPS above calibrated range | From a cleared state, set either one channel just above its saved upper endpoint, without exceeding 3.3 V | APPS `FAULT`; DAC commands become zero; latch sets; PB1 low |
 | Recover from APPS range fault | Return both inputs inside their saved ranges but leave throttle above 5% | APPS returns to `OK`, but latch remains set and PB1 remains low |
 | Clear after APPS range fault | With both inputs valid, set both to 4% | Latch clears and PB1 returns high |
 | Brake at low throttle | From a cleared state, set both to 10%; change BRAKEREF from about 0.49 V to 1.24 V and back | No brake/APPS trip because throttle is below 25%; PB1 stays high |
 
-### Important threshold boundary to document
-
-The current code uses `throttlePermille >= 250` to trip and `throttlePermille <= 50` to clear. That means it trips at exactly 25% and clears at exactly 5%. The rule wording supplied for this project says “more than 25%” and “less than 5%.” The exact equality cases therefore need a team decision against the official applicable rulebook. The table above documents what the **current code** does; it is not a ruling that the boundary implementation is compliant.
+The code follows the supplied wording strictly: trip at `> 250` permille and clear at `< 50` permille. Equality does not trip or clear.
 
 ## Redundant-sensor mismatch demonstration
 
-This is a useful test to expose what is not implemented yet:
+This test checks the redundant-sensor mismatch response:
 
-1. Start from a cleared state: valid readings at or below 5%, BRAKEREF at about 0.49 V, PB1 high.
+1. Start from a cleared state: valid readings below 5%, BRAKEREF at about 0.49 V, PB1 high.
 2. Keep BRAKEREF at its released reading.
 3. Set APPS1 to 40% of its own saved range and APPS2 to 55% of its own saved range. Both voltages must remain within their saved limits.
 4. Keep the mismatch for more than 100 ms, then send `STATUS` and record the result.
 
-Expected from **current code**: the firmware reports about 55% `Throttle`. Since the normalized readings differ by more than 10 percentage points for over 100 ms, it sets APPS `FAULT` and latches PB1 low. Returning the APPS readings to agreement cancels the active mismatch condition, but the inhibit remains latched until both readings are valid and APPS demand is 5% or less.
+Expected: the firmware reports about 55% `Throttle`. Since the normalized readings differ by more than 10 percentage points for over 100 ms, it sets APPS `FAULT`, latches PB1 low, and sets both DAC commands to zero. Returning the APPS readings to agreement clears the active mismatch indication, but the shutdown remains latched until valid APPS demand is below 5%.
 
-If the APPS readings agree again before 100 ms, the mismatch timer should cancel without setting the mismatch fault. This also checks the timer reset behavior.
+If the APPS readings agree again at or before 100 ms, the mismatch timer should cancel without setting the mismatch fault. This also checks the timer reset behavior.
+
+## Example firmware trace
+
+Assume calibration maps both sensors to the same pedal percentage, BRAKEREF is about 1.24 V when pressed, and the test starts in the clear state. `PB1` is active low; the DAC entries are software commands in counts.
+
+| Step | Inputs / elapsed condition | Firmware decision | PB1 / DAC commands |
+| --- | --- | --- | --- |
+| 1 | Brake released, APPS 0% | Valid sensors; no trip; latch clears | HIGH / healthy-state values |
+| 2 | Brake pressed, APPS exactly 25% | `250` is not greater than `250`; no trip | HIGH / healthy-state values |
+| 3 | Brake pressed, APPS 26% | Brake and APPS condition coincide; latch sets | LOW / `0, 0` |
+| 4 | Brake released, APPS 26% | Latch remains set because APPS is not below 5% | LOW / `0, 0` |
+| 5 | Brake pressed or released, APPS exactly 5% | `50` is not less than `50`; latch stays set | LOW / `0, 0` |
+| 6 | Brake still pressed, APPS 4% and both sensors valid | Clear condition met regardless of brake; latch clears | HIGH / healthy-state values |
+| 7 | Sensors disagree by 11%; wait 101 ms | Mismatch becomes an APPS fault and latches shutdown | LOW / `0, 0` |
+
+This trace describes firmware outputs on the Nucleo. It does not demonstrate actual motor power removal or validate the physical pedal springs, sensor wiring, pull resistors, or connector checks required by technical inspection.
 
 ## What part of the code each test exercises
 
@@ -111,18 +125,18 @@ If the APPS readings agree again before 100 ms, the mismatch timer should cancel
 | `CalibrationIsValid()` and `SAVE LOWER/UPPER` in `Core/Src/main.c` | Checks and stores the calibration endpoints | `GETSAVED` shows the endpoints used by the percentage formula |
 | Main loop sensor check in `Core/Src/main.c` | Checks each channel against its own saved lower/upper range | Inputs outside either range show APPS `FAULT` and zero DAC commands |
 | `GetThrottlePermille()` in `Core/Src/main.c` | Converts each valid sensor to 0–1000 permille and selects the higher value | `STATUS` throttle follows the larger normalized channel |
-| `UpdateThrottleBrakeLatch()` in `Core/Src/main.c` | Compares PA1 ADC reading with the BRAKEREF threshold, sets/clears the latch, and writes active-low PB1 | Brake+throttle trip, latch hold, and low-throttle clear cases |
+| `UpdateThrottleBrakeLatch()` in `Core/Src/main.c` | Compares PA1 and APPS state, sets/clears the latch, and writes active-low PB1 | Brake+throttle trip, fault trip, latch hold, and low-throttle clear cases |
 | `HAL_ADC_MspInit()` in `Core/Src/stm32f4xx_hal_msp.c` | Configures PA1 as analog ADC input; `MX_GPIO_Init()` configures PB1 as output, initially low | PA1 reads BRAKEREF; low PB1 means inhibit |
 | `SendStatusLine()` in `Core/Src/main.c` | Formats APPS, brake, throttle, inhibit, and DAC-command text | The `STATUS` response used to record each case |
 
 ## How to interpret the important STATUS fields
 
 - `APPS: OK` means both readings are inside their saved calibration ranges and no sustained mismatch fault is active.
-- `APPS: FAULT` means at least one reading is outside its own range or the normalized APPS readings have differed by more than 10 percentage points for over 100 ms.
+- `APPS: FAULT` means at least one reading is outside its own calibrated range or the normalized APPS readings have differed by more than 10 percentage points for over 100 ms.
 - `Throttle: n.n%` is the higher of the two channels after each is normalized to its own saved endpoints.
 - `Brake: PRESSED` means the PA1 reading is at or above the BRAKEREF engagement threshold (about 0.865 V).
 - `Inhibit: LOW` means PB1 is being driven low by the bench firmware. It does not mean a motor was stopped.
-- `DAC commands` are values requested by software. Measure PA4/PA5 separately if you need actual pin voltages. The brake latch itself does not zero these DAC values.
+- `DAC commands` are values requested by software. While the shutdown latch is set, both commands are zero. Measure PA4/PA5 separately to check pin voltages; a zero command does not itself prove downstream motor power removal.
 
 ## Recording results
 

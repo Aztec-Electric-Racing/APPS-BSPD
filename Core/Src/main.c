@@ -68,8 +68,8 @@ typedef struct
 /* PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
 #define INHIBIT_GPIO_PORT       GPIOB
 #define INHIBIT_GPIO_PIN        GPIO_PIN_1
-#define APPS_TRIP_PERMILLE      250U  /* 25.0% calibrated travel */
-#define APPS_CLEAR_PERMILLE     50U   /* 5.0% calibrated travel */
+#define APPS_TRIP_PERMILLE      250U  /* Trip only above 25.0% travel. */
+#define APPS_CLEAR_PERMILLE     50U   /* Clear only below 5.0% travel. */
 #define UART_COMMAND_BUFFER_SIZE 128U
 
 /* Converts ADC/DAC counts to millivolts at the MCU pin (before any external divider) */
@@ -138,6 +138,7 @@ static uint32_t ClampDac(int32_t value);
 static uint16_t AdcToSensorCounts(uint16_t adcCounts);
 static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2);
 static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range);
+static void UpdateAppsAndShutdown(void);
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid);
 static void HandleConsoleCommand(const char* cmd);
 static void SendStatusLine(const char* prefix);
@@ -201,22 +202,89 @@ static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t rang
   return (uint16_t)((permille > 1000U) ? 1000U : permille);
 }
 
+/* Read the latest samples, check both APPS channels, and update shutdown/DAC state. */
+static void UpdateAppsAndShutdown(void)
+{
+  /* Keep one ADC snapshot so every calculation in this pass uses the same sample. */
+  checkedApps1 = apps1;
+  checkedApps2 = apps2;
+  uint16_t sensor1 = AdcToSensorCounts(checkedApps1);
+  uint16_t sensor2 = AdcToSensorCounts(checkedApps2);
+  uint8_t sensorsValid =
+      (ee.sens1Lower <= sensor1) && (sensor1 <= ee.sens1Upper) &&
+      (ee.sens2Lower <= sensor2) && (sensor2 <= ee.sens2Upper);
+
+  if (!sensorsValid)
+  {
+    apps1Permille = 0U;
+    apps2Permille = 0U;
+    throttlePermille = 0U;
+    appsMismatchTiming = 0U;
+    appsFault = 1U;
+    dac1Out = 0U;
+    dac2Out = 0U;
+  }
+  else
+  {
+    apps1Permille = GetSensorPermille(sensor1, ee.sens1Lower, sens1Range);
+    apps2Permille = GetSensorPermille(sensor2, ee.sens2Lower, sens2Range);
+    throttlePermille = GetThrottlePermille(sensor1, sensor2);
+
+    /* A mismatch is a difference greater than 10% pedal travel for >100 ms. */
+    uint16_t difference = (apps1Permille > apps2Permille) ?
+                          (apps1Permille - apps2Permille) :
+                          (apps2Permille - apps1Permille);
+    if (difference > (uint16_t)(SENS_ACCEPTABLE_DIFF * 1000.0f))
+    {
+      if (!appsMismatchTiming)
+      {
+        appsMismatchTiming = 1U;
+        appsMismatchStartTick = HAL_GetTick();
+      }
+      appsFault = (HAL_GetTick() - appsMismatchStartTick) > APPS_MISMATCH_TIME_MS;
+    }
+    else
+    {
+      appsMismatchTiming = 0U;
+      appsFault = 0U;
+    }
+
+    /* Keep the existing healthy-state DAC reference calculation for bench use. */
+    int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
+    int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
+    dac1Out = ClampDac(offset + tolerance);
+    dac2Out = ClampDac(offset - tolerance);
+  }
+
+  UpdateThrottleBrakeLatch(sensorsValid);
+
+  /* A latched shutdown drives both DAC command outputs fully to zero. */
+  if (throttleBrakeLatched)
+  {
+    dac1Out = 0U;
+    dac2Out = 0U;
+  }
+}
+
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
 {
   uint16_t brake = brakeAdc;
   brakesPressed = (brake >= BRAKE_ENGAGED_COUNTS);
   brakePermille = (uint16_t)(((uint32_t)brake * 1000U) / ADC_MAX_COUNTS);
 
-  if (!sensorsValid || appsFault || (brakesPressed && (throttlePermille >= APPS_TRIP_PERMILLE)))
+  /* Any APPS failure shuts down immediately. Brake plus >25% also latches. */
+  if (!sensorsValid || appsFault ||
+      (brakesPressed && (throttlePermille > APPS_TRIP_PERMILLE)))
   {
     throttleBrakeLatched = 1U;
   }
-  else if (sensorsValid && (throttlePermille <= APPS_CLEAR_PERMILLE))
+  /* Brake state does not matter when clearing: APPS must be below 5%. */
+  else if (sensorsValid && !appsFault && (throttlePermille < APPS_CLEAR_PERMILLE))
   {
     throttleBrakeLatched = 0U;
   }
 
-  /* A bad APPS reading also forces the bench inhibit low. */
+  /* PB1 is active low: low means the bench shutdown request is active. */
   HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN,
                     (sensorsValid && !throttleBrakeLatched) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
@@ -442,59 +510,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    // Take one snapshot so both checks and the USB READ use the same sample
-    uint16_t rawS1 = apps1;
-    uint16_t rawS2 = apps2;
-    checkedApps1 = rawS1;
-    checkedApps2 = rawS2;
-    uint16_t s1 = AdcToSensorCounts(rawS1);
-    uint16_t s2 = AdcToSensorCounts(rawS2);
-
-    //Math section
-    /*Make sure that the sensors going into the mcu are correct values, shutdown otherwise
-     *
-     * Also for the DAC math I need to account for the voltage divider on the adc and reverse it for the DAC output. It shouldn't be
-     * that high so reversing it should be fine*/
-    uint8_t sensorsValid = ((ee.sens1Lower <= s1) && (s1 <= ee.sens1Upper) &&
-                            (ee.sens2Lower <= s2) && (s2 <= ee.sens2Upper));
-    if (sensorsValid)
-    {
-      apps1Permille = GetSensorPermille(s1, ee.sens1Lower, sens1Range);
-      apps2Permille = GetSensorPermille(s2, ee.sens2Lower, sens2Range);
-      throttlePermille = GetThrottlePermille(s1, s2);
-      uint16_t mismatch = (apps1Permille > apps2Permille) ?
-                          (apps1Permille - apps2Permille) : (apps2Permille - apps1Permille);
-      if (mismatch > (uint16_t)(SENS_ACCEPTABLE_DIFF * 1000.0f))
-      {
-        if (!appsMismatchTiming)
-        {
-          appsMismatchTiming = 1U;
-          appsMismatchStartTick = HAL_GetTick();
-        }
-        appsFault = ((HAL_GetTick() - appsMismatchStartTick) > APPS_MISMATCH_TIME_MS);
-      }
-      else
-      {
-        appsMismatchTiming = 0U;
-        appsFault = 0U;
-      }
-      int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
-      int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
-      dac1Out = ClampDac(offset + tolerance);
-      dac2Out = ClampDac(offset - tolerance);
-    }
-    else
-    {
-      throttlePermille = 0U;
-      apps1Permille = 0U;
-      apps2Permille = 0U;
-      appsMismatchTiming = 0U;
-      // Out of range: drive both outputs to 0 V (DAC counts 0-4095 map to 0-3.3 V)
-      dac1Out = 0;
-      dac2Out = 0;
-      appsFault = 1;
-    }
-    UpdateThrottleBrakeLatch(sensorsValid);
+    UpdateAppsAndShutdown();
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out); //PA4
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out); //PA5
 

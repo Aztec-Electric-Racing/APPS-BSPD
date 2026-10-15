@@ -62,7 +62,7 @@ For calibration, put the pedal at its released position and send `SAVE LOWER`. M
 ### Firmware
 
 - [ ] Confirm the 10% sensor-difference tolerance against the applicable rules and vehicle design. It is currently a code constant, not a verified requirement.
-- [ ] Add sensor-to-sensor mismatch detection and torque shutdown when the mismatch lasts longer than 100 ms. The current code only checks each sensor against its own saved range.
+- [x] Add sensor-to-sensor mismatch detection and latch the bench shutdown when disagreement is greater than 10% for more than 100 ms.
 - [ ] Confirm how open, shorted, stuck, invalid, and lost sensor signals should be detected. Add any missing checks and define the fault response.
 - [ ] Review the calibration storage approach and flash wear. The code comment notes that saving currently erases a flash sector; determine whether EEPROM emulation is suitable for expected calibration writes.
 - [ ] Confirm the DAC calculation and whether output scaling must account for any external circuit or divider. The code comment calls this out as unresolved.
@@ -74,7 +74,7 @@ For calibration, put the pedal at its released position and send `SAVE LOWER`. M
 - [ ] Record each sensor's readings at released pedal (0%) and full travel (100%); confirm the pedal returns to zero and the mechanical stop prevents overtravel.
 - [ ] Test unplugged, shorted, stuck, out-of-range, and mismatched sensor inputs. Record whether torque is removed and how long each fault takes to respond.
 - [ ] Confirm the two sensors are electrically separate and have different transfer functions.
-- [ ] Verify the implemented brake-plus-throttle behavior on the bench: brake plus at least 25% APPS latches the inhibit low until valid APPS readings are at or below 5%.
+- [x] Implement the bench rule thresholds: brake plus more than 25% APPS latches shutdown; valid APPS below 5% clears it, regardless of brake state.
 - [ ] Verify the physical torque/shutdown response; USB messages alone do not prove that the outputs or shutdown circuit work.
 - [ ] Confirm the PCB schematic's MCU pin assignment and output polarity before moving the PB0/PB1 Nucleo bench mapping to the board.
 
