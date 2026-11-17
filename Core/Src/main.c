@@ -44,7 +44,6 @@ typedef struct
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define ADC_MAX_COUNTS          4095
-#define DAC_MAX_COUNTS          4095
 
 /* The APPS input divider passes approximately 72% of the sensor voltage.
  * Calibration values are kept in sensor-side counts; normalize ADC readings
@@ -65,14 +64,15 @@ typedef struct
 #define BRAKE_ENGAGED_MV        1240U
 #define BRAKE_THRESHOLD_MV      ((BRAKE_RELEASED_MV + BRAKE_ENGAGED_MV) / 2U)
 #define BRAKE_ENGAGED_COUNTS    ((BRAKE_THRESHOLD_MV * ADC_MAX_COUNTS + 1650U) / 3300U)
-/* PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
-#define INHIBIT_GPIO_PORT       GPIOB
-#define INHIBIT_GPIO_PIN        GPIO_PIN_1
+/* PA7 (APPS/BC_Fail) is the throttle/brake inhibit output: HIGH = OK/enabled, LOW = inhibit.
+ * The board has a 10k pull-down (R3), so a Hi-Z pin also inhibits. PB1/PB5 are fan/pump PWM. */
+#define INHIBIT_GPIO_PORT       GPIOA
+#define INHIBIT_GPIO_PIN        GPIO_PIN_7
 #define APPS_TRIP_PERMILLE      250U  /* Trip only above 25.0% travel. */
 #define APPS_CLEAR_PERMILLE     50U   /* Clear only below 5.0% travel. */
 #define UART_COMMAND_BUFFER_SIZE 128U
 
-/* Converts ADC/DAC counts to millivolts at the MCU pin (before any external divider) */
+/* Converts ADC counts to millivolts at the MCU pin (before any external divider) */
 #define COUNTS_TO_MV(c)         ((uint32_t)(c) * 3300U / 4095U)
 /* USER CODE END PD */
 
@@ -85,7 +85,7 @@ typedef struct
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
-DAC_HandleTypeDef hdac;
+TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -103,9 +103,6 @@ Storage_t ee;
 uint16_t sens1Range = 0;
 uint16_t sens2Range = 0;
 
-//Last values written to the DACs, for STATUS/heartbeat output
-uint32_t dac1Out = 0;
-uint32_t dac2Out = 0;
 uint8_t appsFault = 1;
 uint8_t brakesPressed = 0;
 uint8_t throttleBrakeLatched = 1;
@@ -125,16 +122,17 @@ uint8_t heartbeatEnabled = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
-static void MX_DAC_Init(void);
+static void MX_TIM3_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void LoadDefaultCalibration(void);
 static uint8_t CalibrationIsValid(void);
 static void UpdateSensorRanges(void);
-static uint32_t ClampDac(int32_t value);
+static void InhibitForceLow(void);
 static uint16_t AdcToSensorCounts(uint16_t adcCounts);
 static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2);
 static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range);
@@ -169,11 +167,10 @@ static void UpdateSensorRanges(void)
   sens2Range = (uint16_t)abs((int32_t)ee.sens2Upper - (int32_t)ee.sens2Lower);
 }
 
-static uint32_t ClampDac(int32_t value)
+/* Drive the inhibit line low with a single register write (safe from any context). */
+static void InhibitForceLow(void)
 {
-  if (value < 0) return 0;
-  if (value > DAC_MAX_COUNTS) return DAC_MAX_COUNTS;
-  return (uint32_t)value;
+  INHIBIT_GPIO_PORT->BSRR = ((uint32_t)INHIBIT_GPIO_PIN) << 16U;
 }
 
 static uint16_t AdcToSensorCounts(uint16_t adcCounts)
@@ -202,7 +199,7 @@ static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t rang
   return (uint16_t)((permille > 1000U) ? 1000U : permille);
 }
 
-/* Read the latest samples, check both APPS channels, and update shutdown/DAC state. */
+/* Read the latest samples, check both APPS channels, and update the shutdown state. */
 static void UpdateAppsAndShutdown(void)
 {
   /* Keep one ADC snapshot so every calculation in this pass uses the same sample. */
@@ -221,8 +218,6 @@ static void UpdateAppsAndShutdown(void)
     throttlePermille = 0U;
     appsMismatchTiming = 0U;
     appsFault = 1U;
-    dac1Out = 0U;
-    dac2Out = 0U;
   }
   else
   {
@@ -248,22 +243,9 @@ static void UpdateAppsAndShutdown(void)
       appsMismatchTiming = 0U;
       appsFault = 0U;
     }
-
-    /* Keep the existing healthy-state DAC reference calculation for bench use. */
-    int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
-    int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
-    dac1Out = ClampDac(offset + tolerance);
-    dac2Out = ClampDac(offset - tolerance);
   }
 
   UpdateThrottleBrakeLatch(sensorsValid);
-
-  /* A latched shutdown drives both DAC command outputs fully to zero. */
-  if (throttleBrakeLatched)
-  {
-    dac1Out = 0U;
-    dac2Out = 0U;
-  }
 }
 
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
@@ -284,7 +266,7 @@ static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
     throttleBrakeLatched = 0U;
   }
 
-  /* PB1 is active low: low means the bench shutdown request is active. */
+  /* PA7: low means the shutdown request is active. */
   HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN,
                     (sensorsValid && !throttleBrakeLatched) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
@@ -298,17 +280,12 @@ static void SendStatusLine(const char* prefix)
   uint16_t sensor2 = AdcToSensorCounts(adc2);
   int32_t measuredDiffCounts = (int32_t)sensor1 - (int32_t)sensor2;
   int32_t measuredDiffMv = (measuredDiffCounts * 3300L) / ADC_MAX_COUNTS;
-  int32_t calibratedOffset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
-  int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
-  uint32_t plusRef = ClampDac(calibratedOffset + tolerance);
-  uint32_t minusRef = ClampDac(calibratedOffset - tolerance);
 
   snprintf(msg, sizeof(msg),
            "%s up %lus | APPS: %s | Brake: %s (%u.%u%%) | APPS1: %u.%u%% | APPS2: %u.%u%% | Throttle: %u.%u%% | Inhibit: %s\r\n"
            "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV), PA1/Brake=%u counts\r\n"
            "APPS sensor-side (divider compensated): APPS1=%lumV [LOW %lumV, HIGH %lumV]; APPS2=%lumV [LOW %lumV, HIGH %lumV]\r\n"
-           "APPS_DIFF measured (APPS1-APPS2): %+ldmV | Calibrated +/-10%% refs: PA4 +10%%=%lumV, PA5 -10%%=%lumV\r\n"
-           "DAC commands (calculated, not pin feedback): PA4/DAC1=%lu counts (%lumV); PA5/DAC2=%lu counts (%lumV)\r\n\r\n",
+           "APPS_DIFF measured (APPS1-APPS2): %+ldmV\r\n\r\n",
            prefix, HAL_GetTick() / 1000, appsFault ? "FAULT" : "OK",
            brakesPressed ? "PRESSED" : "released", brakePermille / 10U, brakePermille % 10U,
            apps1Permille / 10U, apps1Permille % 10U, apps2Permille / 10U, apps2Permille % 10U,
@@ -317,8 +294,7 @@ static void SendStatusLine(const char* prefix)
            adc1, COUNTS_TO_MV(adc1), adc2, COUNTS_TO_MV(adc2), brakeAdc,
            COUNTS_TO_MV(sensor1), COUNTS_TO_MV(ee.sens1Lower), COUNTS_TO_MV(ee.sens1Upper),
            COUNTS_TO_MV(sensor2), COUNTS_TO_MV(ee.sens2Lower), COUNTS_TO_MV(ee.sens2Upper),
-           (long)measuredDiffMv, COUNTS_TO_MV(plusRef), COUNTS_TO_MV(minusRef),
-           dac1Out, COUNTS_TO_MV(dac1Out), dac2Out, COUNTS_TO_MV(dac2Out));
+           (long)measuredDiffMv);
   ConsoleSendString(msg);
 }
 
@@ -361,7 +337,7 @@ static void HandleConsoleCommand(const char* cmd)
     ConsoleSendString("Commands:\r\n"
                    "  PING            Reply PONG\r\n"
                    "  READ            Raw ADC counts for APPS1/APPS2\r\n"
-                   "  STATUS          APPS, brake, throttle-latch, limits, and DAC status\r\n"
+                   "  STATUS          APPS, brake, throttle-latch, and limits\r\n"
                    "  GETSAVED        Show saved calibration\r\n"
                    "  SAVE LOWER      Save current pedal position as lower limit\r\n"
                    "  SAVE UPPER      Save current pedal position as upper limit\r\n"
@@ -390,7 +366,7 @@ static void HandleConsoleCommand(const char* cmd)
   else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
   {
     // Store sensor-side counts after compensating for the APPS input divider.
-    // Note: erasing the 128K sector stalls the CPU for ~1-2s, the DACs hold their last value meanwhile.
+    // Note: erasing the 128K sector stalls the CPU for ~1-2s, so the inhibit is forced low first.
     uint8_t upper = (strcmp(cmd, "SAVE UPPER") == 0);
     Storage_t previous = ee;
     if (upper)
@@ -409,8 +385,9 @@ static void HandleConsoleCommand(const char* cmd)
       ee = previous;
       ConsoleSendString("ERROR: lower must be below upper, calibration not saved.\r\n");
     }
-    else if (!ee_write())
+    else if (InhibitForceLow(), !ee_write())
     {
+      ee = previous; /* keep RAM calibration identical to what is in flash */
       ConsoleSendString("ERROR: flash write failed.\r\n");
     }
     else
@@ -468,13 +445,12 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
-  MX_DAC_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  // Start in the "shut down" state until calibration is loaded
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0);
-  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
-  HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
+  // Inhibit (PA7) is already low from MX_GPIO_Init: stay shut down until calibration is loaded
+  // Fan (PB1/TIM3_CH4) and pump (PB5/TIM3_CH2) PWM, 20 kHz / 50%
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 3);
   (void)HAL_UART_Receive_IT(&huart2, &uartRxByte, 1U);
@@ -490,6 +466,7 @@ int main(void)
   if (!CalibrationIsValid())
   {
     LoadDefaultCalibration();
+    InhibitForceLow();
     ee_write();
   }
   UpdateSensorRanges();
@@ -511,8 +488,6 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     UpdateAppsAndShutdown();
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac1Out); //PA4
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dac2Out); //PA5
 
     // Greet USB CDC terminals when they open, even if the firmware booted first.
     if (UsbPortJustOpened)
@@ -666,50 +641,43 @@ static void MX_ADC1_Init(void)
 }
 
 /**
-  * @brief DAC Initialization Function
-  * @param None
-  * @retval None
+  * @brief TIM3 Initialization Function (fan PWM on PB1/CH4, pump PWM on PB5/CH2)
+  *        TIM3 clock = PCLK1 = 30 MHz here, so Period 1499 -> 20 kHz, Pulse 750 -> 50%.
   */
-static void MX_DAC_Init(void)
+static void MX_TIM3_Init(void)
 {
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
-  /* USER CODE BEGIN DAC_Init 0 */
-
-  /* USER CODE END DAC_Init 0 */
-
-  DAC_ChannelConfTypeDef sConfig = {0};
-
-  /* USER CODE BEGIN DAC_Init 1 */
-
-  /* USER CODE END DAC_Init 1 */
-
-  /** DAC Initialization
-  */
-  hdac.Instance = DAC;
-  if (HAL_DAC_Init(&hdac) != HAL_OK)
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 0;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 1499;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
   {
     Error_Handler();
   }
-
-  /** DAC channel OUT1 config
-  */
-  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
-  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
-  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-
-  /** DAC channel OUT2 config
-  */
-  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_2) != HAL_OK)
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 750;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN DAC_Init 2 */
-
-  /* USER CODE END DAC_Init 2 */
-
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  HAL_TIM_MspPostInit(&htim3);
 }
 
 /**
@@ -746,21 +714,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /* Set the low-true inhibit before configuring PB1 as an output. */
+  /* Set the inhibit (PA7) low before configuring it as an output. */
   HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN, GPIO_PIN_RESET);
   GPIO_InitStruct.Pin = INHIBIT_GPIO_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(INHIBIT_GPIO_PORT, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -818,6 +778,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  InhibitForceLow();
   __disable_irq();
   while (1)
   {
