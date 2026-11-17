@@ -70,7 +70,6 @@ typedef struct
 #define INHIBIT_GPIO_PIN        GPIO_PIN_7
 #define APPS_TRIP_PERMILLE      250U  /* Trip only above 25.0% travel. */
 #define APPS_CLEAR_PERMILLE     50U   /* Clear only below 5.0% travel. */
-#define UART_COMMAND_BUFFER_SIZE 128U
 
 /* Converts ADC counts to millivolts at the MCU pin (before any external divider) */
 #define COUNTS_TO_MV(c)         ((uint32_t)(c) * 3300U / 4095U)
@@ -85,11 +84,11 @@ typedef struct
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
-TIM_HandleTypeDef htim3;
-UART_HandleTypeDef huart2;
+TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
-volatile uint16_t adc_buf[3];   // [0] = PC4/APPS1, [1] = PC5/APPS2, [2] = PA1/brake
+volatile uint16_t adc_buf[3];   // [0] = PC4/APPS1, [1] = PC5/APPS2, [2] = PA3/brake
 volatile uint16_t apps1 = 0;
 volatile uint16_t apps2 = 0;
 volatile uint16_t brakeAdc = 0;
@@ -112,10 +111,6 @@ uint16_t apps2Permille = 0;
 uint16_t brakePermille = 0;
 static uint8_t appsMismatchTiming = 0U;
 static uint32_t appsMismatchStartTick = 0U;
-static uint8_t uartRxByte;
-static char uartCommandBuffer[UART_COMMAND_BUFFER_SIZE];
-static uint16_t uartCommandLength = 0U;
-static volatile uint8_t uartCommandReady = 0U;
 
 uint8_t heartbeatEnabled = 0;
 /* USER CODE END PV */
@@ -126,8 +121,8 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
-static void MX_TIM3_Init(void);
-static void MX_USART2_UART_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 static void LoadDefaultCalibration(void);
 static uint8_t CalibrationIsValid(void);
@@ -283,7 +278,7 @@ static void SendStatusLine(const char* prefix)
 
   snprintf(msg, sizeof(msg),
            "%s up %lus | APPS: %s | Brake: %s (%u.%u%%) | APPS1: %u.%u%% | APPS2: %u.%u%% | Throttle: %u.%u%% | Inhibit: %s\r\n"
-           "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV), PA1/Brake=%u counts\r\n"
+           "ADC pins: PC4/APPS1=%u counts (%lumV), PC5/APPS2=%u counts (%lumV), PA3/Brake=%u counts\r\n"
            "APPS sensor-side (divider compensated): APPS1=%lumV [LOW %lumV, HIGH %lumV]; APPS2=%lumV [LOW %lumV, HIGH %lumV]\r\n"
            "APPS_DIFF measured (APPS1-APPS2): %+ldmV\r\n\r\n",
            prefix, HAL_GetTick() / 1000, appsFault ? "FAULT" : "OK",
@@ -300,11 +295,6 @@ static void SendStatusLine(const char* prefix)
 
 static void ConsoleSendString(const char* str)
 {
-  size_t length = strlen(str);
-  if (length > 0U)
-  {
-    (void)HAL_UART_Transmit(&huart2, (uint8_t*)str, (uint16_t)length, 100U);
-  }
   if (UsbPortOpen)
   {
     (void)CDC_SendString(str);
@@ -317,14 +307,6 @@ static void HandleConsoleInput(void)
   {
     HandleConsoleCommand((const char*)UserRxBuffer);
     DataReceivedFlag = 0;
-  }
-  if (uartCommandReady)
-  {
-    HandleConsoleCommand(uartCommandBuffer);
-    __disable_irq();
-    uartCommandLength = 0U;
-    uartCommandReady = 0U;
-    __enable_irq();
   }
 }
 
@@ -442,18 +424,17 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_USART2_UART_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
-  MX_TIM3_Init();
+  MX_TIM2_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   // Inhibit (PA7) is already low from MX_GPIO_Init: stay shut down until calibration is loaded
-  // Fan (PB1/TIM3_CH4) and pump (PB5/TIM3_CH2) PWM, 20 kHz / 50%
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+  // Pump (PB3/TIM2_CH2) and fan (PB6/TIM4_CH1) PWM, 20 kHz / 50%
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 3);
-  (void)HAL_UART_Receive_IT(&huart2, &uartRxByte, 1U);
   HAL_Delay(1000);
 
   // Load calibration from flash. Only fall back to (and write) the defaults when
@@ -470,8 +451,6 @@ int main(void)
     ee_write();
   }
   UpdateSensorRanges();
-
-  ConsoleSendString("USART2 console ready (115200 8N1). Type HELP and press Enter.\r\n");
 
   /*IMPORTANT: Should probably move off of Emulated EEPROM to save memory life. I was reasearching
    * and it seemed as if there was a way to write to flash as long as it was empty. Just have a bunch of
@@ -555,25 +534,6 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief USART2 initialization for the Nucleo ST-LINK virtual COM port.
-  */
-static void MX_USART2_UART_Init(void)
-{
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-}
-
-/**
   * @brief ADC1 Initialization Function
   * @param None
   * @retval None
@@ -619,7 +579,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
-  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = 3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -641,27 +601,27 @@ static void MX_ADC1_Init(void)
 }
 
 /**
-  * @brief TIM3 Initialization Function (fan PWM on PB1/CH4, pump PWM on PB5/CH2)
-  *        TIM3 clock = PCLK1 = 30 MHz here, so Period 1499 -> 20 kHz, Pulse 750 -> 50%.
+  * @brief TIM2 Initialization (PWM CH2: pump on PB3).
+  *        Timer clock = PCLK1 = 30 MHz: Period 1499 -> 20 kHz, Pulse 750 -> 50%.
   */
-static void MX_TIM3_Init(void)
+static void MX_TIM2_Init(void)
 {
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
 
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 1499;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 0;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 1499;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
@@ -669,15 +629,47 @@ static void MX_TIM3_Init(void)
   sConfigOC.Pulse = 750;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
+  HAL_TIM_MspPostInit(&htim2);
+}
+
+/**
+  * @brief TIM4 Initialization (PWM CH1: fan on PB6).
+  *        Timer clock = PCLK1 = 30 MHz: Period 1499 -> 20 kHz, Pulse 750 -> 50%.
+  */
+static void MX_TIM4_Init(void)
+{
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 0;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 1499;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
   {
     Error_Handler();
   }
-  HAL_TIM_MspPostInit(&htim3);
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 750;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  HAL_TIM_MspPostInit(&htim4);
 }
 
 /**
@@ -734,40 +726,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     {
         apps1 = adc_buf[0];   // PC4
         apps2 = adc_buf[1];   // PC5
-        brakeAdc = adc_buf[2]; // PA1
+        brakeAdc = adc_buf[2]; // PA3
     }
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
-{
-  if (huart->Instance == USART2)
-  {
-    uint8_t c = uartRxByte;
-    if (!uartCommandReady)
-    {
-      if ((c == '\r') || (c == '\n'))
-      {
-        if (uartCommandLength > 0U)
-        {
-          uartCommandBuffer[uartCommandLength] = '\0';
-          uartCommandReady = 1U;
-        }
-      }
-      else if (c != '\r')
-      {
-        if (uartCommandLength < UART_COMMAND_BUFFER_SIZE - 1U)
-        {
-          uartCommandBuffer[uartCommandLength++] = (char)c;
-        }
-        else
-        {
-          uartCommandLength = 0U; /* Drop an overlong line. */
-        }
-      }
-    }
-    (void)HAL_UART_Receive_IT(&huart2, &uartRxByte, 1U);
-  }
-}
 /* USER CODE END 4 */
 
 /**
