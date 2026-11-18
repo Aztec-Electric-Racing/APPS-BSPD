@@ -268,7 +268,7 @@ static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
 
 static void SendStatusLine(const char* prefix)
 {
-  char msg[768];
+  char msg[256];
   uint16_t adc1 = checkedApps1;
   uint16_t adc2 = checkedApps2;
   uint16_t sensor1 = AdcToSensorCounts(adc1);
