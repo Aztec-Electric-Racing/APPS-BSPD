@@ -213,7 +213,6 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
-
 /**
   * @brief This function handles USB On The Go HS global interrupt.
   */
