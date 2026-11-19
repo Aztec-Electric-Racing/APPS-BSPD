@@ -37,6 +37,61 @@ target_include_directories(test_clampdac PRIVATE
         unity/src
 )
 
+add_executable(test_throttle_permille
+        unit/test_throttle_permille.c
+        ../Core/Src/apps_logic.c
+        unity/src/unity.c
+)
+
+target_include_directories(test_throttle_permille PRIVATE
+        ../Core/Inc
+        unity/src
+)
+
+add_executable(test_sensors_valid
+        unit/test_sensors_valid.c
+        ../Core/Src/apps_logic.c
+        unity/src/unity.c
+)
+
+target_include_directories(test_sensors_valid PRIVATE
+        ../Core/Inc
+        unity/src
+)
+
+add_executable(test_calibration_valid
+        unit/test_calibration_valid.c
+        ../Core/Src/apps_logic.c
+        unity/src/unity.c
+)
+
+target_include_directories(test_calibration_valid PRIVATE
+        ../Core/Inc
+        unity/src
+)
+
+add_executable(test_mismatch_timer
+        unit/test_mismatch_timer.c
+        ../Core/Src/apps_logic.c
+        unity/src/unity.c
+)
+
+target_include_directories(test_mismatch_timer PRIVATE
+        ../Core/Inc
+        unity/src
+)
+
+add_executable(test_throttle_brake_latch
+        unit/test_throttle_brake_latch.c
+        ../Core/Src/apps_logic.c
+        unity/src/unity.c
+)
+
+target_include_directories(test_throttle_brake_latch PRIVATE
+        ../Core/Inc
+        unity/src
+)
+
 enable_testing()
 
 add_test(
@@ -47,4 +102,34 @@ add_test(
 add_test(
         NAME Sensor_Permille
         COMMAND test_sensor_permille
+)
+
+add_test(
+        NAME Clampdac
+        COMMAND test_clampdac
+)
+
+add_test(
+        NAME Throttle_Permille
+        COMMAND test_throttle_permille
+)
+
+add_test(
+        NAME Sensors_Valid
+        COMMAND test_sensors_valid
+)
+
+add_test(
+        NAME Calibration_Valid
+        COMMAND test_calibration_valid
+)
+
+add_test(
+        NAME Mismatch_Timer
+        COMMAND test_mismatch_timer
+)
+
+add_test(
+        NAME Throttle_Brake_Latch
+        COMMAND test_throttle_brake_latch
 )

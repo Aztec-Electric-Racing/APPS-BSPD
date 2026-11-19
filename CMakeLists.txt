@@ -13,6 +13,7 @@ set(STARTUP_FILE
         Core/Inc/apps_logic.h
         tests/unit/test_sensor_permille.c
         tests/unit/test_clampdac.c
+        tests/unit/test_throttle_permille.c
 )
 
 file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS

@@ -16,3 +16,4 @@ uint16_t AdcToSensorCounts(uint16_t adcCounts)
 
     return (uint16_t)sensorCounts;
 }
+

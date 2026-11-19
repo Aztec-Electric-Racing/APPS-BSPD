@@ -56,7 +56,6 @@ typedef struct
 
 /* Allowed APPS1/APPS2 disagreement as a fraction of pedal travel (FSAE: 10%) */
 #define SENS_ACCEPTABLE_DIFF    0.10f
-#define APPS_MISMATCH_TIME_MS   100U
 
 /* How often the console heartbeat line is printed when enabled */
 #define HEARTBEAT_PERIOD_MS     1000
@@ -70,8 +69,6 @@ typedef struct
 /* PB1 is the active-low throttle/brake inhibit output (low = inhibit). */
 #define INHIBIT_GPIO_PORT       GPIOB
 #define INHIBIT_GPIO_PIN        GPIO_PIN_1
-#define APPS_TRIP_PERMILLE      250U  /* 25.0% calibrated travel */
-#define APPS_CLEAR_PERMILLE     50U   /* 5.0% calibrated travel */
 #define UART_COMMAND_BUFFER_SIZE 128U
 
 /* Converts ADC/DAC counts to millivolts at the MCU pin (before any external divider) */
@@ -115,8 +112,7 @@ uint16_t throttlePermille = 0;
 uint16_t apps1Permille = 0;
 uint16_t apps2Permille = 0;
 uint16_t brakePermille = 0;
-static uint8_t appsMismatchTiming = 0U;
-static uint32_t appsMismatchStartTick = 0U;
+static MismatchTimer_t appsMismatchTimer = {0U, 0U};
 static uint8_t uartRxByte;
 static char uartCommandBuffer[UART_COMMAND_BUFFER_SIZE];
 static uint16_t uartCommandLength = 0U;
@@ -134,10 +130,7 @@ static void MX_DAC_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void LoadDefaultCalibration(void);
-static uint8_t CalibrationIsValid(void);
 static void UpdateSensorRanges(void);
-static uint32_t ClampDac(int32_t value);
-static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2);
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid);
 static void HandleConsoleCommand(const char* cmd);
 static void SendStatusLine(const char* prefix);
@@ -155,13 +148,6 @@ static void LoadDefaultCalibration(void)
   ee.sens2Upper = (uint32_t)((1.543 / 3.3) * ADC_MAX_COUNTS);
 }
 
-/* Erased flash reads as 0xFFFFFFFF, so this also catches a board that has never been calibrated */
-static uint8_t CalibrationIsValid(void)
-{
-  return (ee.sens1Lower < ee.sens1Upper) && (ee.sens1Upper <= ADC_MAX_COUNTS) &&
-         (ee.sens2Lower < ee.sens2Upper) && (ee.sens2Upper <= ADC_MAX_COUNTS);
-}
-
 static void UpdateSensorRanges(void)
 {
   sens1Range = (uint16_t)abs((int32_t)ee.sens1Upper - (int32_t)ee.sens1Lower);
@@ -175,31 +161,14 @@ static void UpdateSensorRanges(void)
  */
 
 
-
-/* Normalize each redundant sensor against its own calibrated endpoints. Use
- * the higher reading so a low-reading channel cannot mask a high throttle. */
-static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2)
-{
-  uint32_t p1 = GetSensorPermille(sensor1, ee.sens1Lower, sens1Range);
-  uint32_t p2 = GetSensorPermille(sensor2, ee.sens2Lower, sens2Range);
-  uint32_t higher = (p1 > p2) ? p1 : p2;
-  return (uint16_t)((higher > 1000U) ? 1000U : higher);
-}
-
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
 {
   uint16_t brake = brakeAdc;
   brakesPressed = (brake >= BRAKE_ENGAGED_COUNTS);
   brakePermille = (uint16_t)(((uint32_t)brake * 1000U) / ADC_MAX_COUNTS);
 
-  if (!sensorsValid || appsFault || (brakesPressed && (throttlePermille >= APPS_TRIP_PERMILLE)))
-  {
-    throttleBrakeLatched = 1U;
-  }
-  else if (sensorsValid && (throttlePermille <= APPS_CLEAR_PERMILLE))
-  {
-    throttleBrakeLatched = 0U;
-  }
+  throttleBrakeLatched = NextThrottleBrakeLatch(throttleBrakeLatched, sensorsValid, appsFault,
+                                                brakesPressed, throttlePermille);
 
   /* A bad APPS reading also forces the bench inhibit low. */
   HAL_GPIO_WritePin(INHIBIT_GPIO_PORT, INHIBIT_GPIO_PIN,
@@ -327,7 +296,7 @@ static void HandleConsoleCommand(const char* cmd)
     *
     */
 
-    if (!CalibrationIsValid())
+    if (!CalibrationIsValid(ee.sens1Lower, ee.sens1Upper, ee.sens2Lower, ee.sens2Upper))
     {
       ee = previous;
       ConsoleSendString("ERROR: lower must be below upper, calibration not saved.\r\n");
@@ -410,7 +379,7 @@ int main(void)
     Error_Handler();
   }
   ee_read();
-  if (!CalibrationIsValid())
+  if (!CalibrationIsValid(ee.sens1Lower, ee.sens1Upper, ee.sens2Lower, ee.sens2Upper))
   {
     LoadDefaultCalibration();
     ee_write();
@@ -457,29 +426,15 @@ int main(void)
      */
 
 
-    uint8_t sensorsValid = ((ee.sens1Lower <= s1) && (s1 <= ee.sens1Upper) &&
-                            (ee.sens2Lower <= s2) && (s2 <= ee.sens2Upper));
+    uint8_t sensorsValid = AreSensorsValid(s1, s2,
+                                           ee.sens1Lower, ee.sens1Upper,
+                                           ee.sens2Lower, ee.sens2Upper);
     if (sensorsValid)
     {
       apps1Permille = GetSensorPermille(s1, ee.sens1Lower, sens1Range);
       apps2Permille = GetSensorPermille(s2, ee.sens2Lower, sens2Range);
-      throttlePermille = GetThrottlePermille(s1, s2);
-      uint16_t mismatch = (apps1Permille > apps2Permille) ?
-                          (apps1Permille - apps2Permille) : (apps2Permille - apps1Permille);
-      if (mismatch > (uint16_t)(SENS_ACCEPTABLE_DIFF * 1000.0f))
-      {
-        if (!appsMismatchTiming)
-        {
-          appsMismatchTiming = 1U;
-          appsMismatchStartTick = HAL_GetTick();
-        }
-        appsFault = ((HAL_GetTick() - appsMismatchStartTick) > APPS_MISMATCH_TIME_MS); // fault management
-      }
-      else
-      {
-        appsMismatchTiming = 0U;
-        appsFault = 0U;
-      }
+      throttlePermille = GetThrottlePermille(s1, s2, ee.sens1Lower, sens1Range, ee.sens2Lower, sens2Range);
+      appsFault = UpdateMismatchFault(&appsMismatchTimer, apps1Permille, apps2Permille, HAL_GetTick()); // fault management
       int32_t offset = abs((int32_t)ee.sens1Lower - (int32_t)ee.sens2Lower);
       int32_t tolerance = (int32_t)(sens1Range * SENS_ACCEPTABLE_DIFF);
       dac1Out = ClampDac(offset + tolerance);
@@ -490,7 +445,7 @@ int main(void)
       throttlePermille = 0U;
       apps1Permille = 0U;
       apps2Permille = 0U;
-      appsMismatchTiming = 0U;
+      MismatchTimerReset(&appsMismatchTimer);
       // Out of range: drive both outputs to 0 V (DAC counts 0-4095 map to 0-3.3 V)
       dac1Out = 0;
       dac2Out = 0;
