@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/STM32F446RCTX_FLASH.ld")
 set(STARTUP_FILE
         "${CMAKE_SOURCE_DIR}/startup_stm32f446rctx.s"
+        Core/Inc/apps_logic.h
+        tests/unit/test_sensor_permille.c
 )
 
 file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS

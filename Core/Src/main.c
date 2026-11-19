@@ -20,6 +20,7 @@
 #include "main.h"
 #include "usb_device.h"
 #include "apps_conversion.h"
+#include "apps_logic.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -136,9 +137,7 @@ static void LoadDefaultCalibration(void);
 static uint8_t CalibrationIsValid(void);
 static void UpdateSensorRanges(void);
 static uint32_t ClampDac(int32_t value);
-static uint16_t AdcToSensorCounts(uint16_t adcCounts);
 static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2);
-static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range);
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid);
 static void HandleConsoleCommand(const char* cmd);
 static void SendStatusLine(const char* prefix);
@@ -190,13 +189,6 @@ static uint16_t GetThrottlePermille(uint16_t sensor1, uint16_t sensor2)
   uint32_t p2 = GetSensorPermille(sensor2, ee.sens2Lower, sens2Range);
   uint32_t higher = (p1 > p2) ? p1 : p2;
   return (uint16_t)((higher > 1000U) ? 1000U : higher);
-}
-
-static uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range)
-{
-  if ((range == 0U) || (sensor <= lower)) return 0U;
-  uint32_t permille = ((uint32_t)(sensor - lower) * 1000U) / range;
-  return (uint16_t)((permille > 1000U) ? 1000U : permille);
 }
 
 static void UpdateThrottleBrakeLatch(uint8_t sensorsValid)
