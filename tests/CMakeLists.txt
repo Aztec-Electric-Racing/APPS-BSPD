@@ -26,6 +26,17 @@ target_include_directories(test_sensor_permille PRIVATE
         unity/src
 )
 
+add_executable(test_clampdac
+        unit/test_clampdac.c
+        ../Core/Src/apps_logic.c
+        unity/src/unity.c
+)
+
+target_include_directories(test_clampdac PRIVATE
+        ../Core/Inc
+        unity/src
+)
+
 enable_testing()
 
 add_test(

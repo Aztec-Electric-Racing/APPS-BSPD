@@ -7,5 +7,6 @@
 #include <stdint.h>
 
 uint16_t GetSensorPermille(uint16_t sensor, uint32_t lower, uint16_t range);
+uint32_t ClampDac(int32_t value);
 
 #endif //APPS_BSPD_APPS_LOGIC_H

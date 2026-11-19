@@ -12,6 +12,7 @@ set(STARTUP_FILE
         "${CMAKE_SOURCE_DIR}/startup_stm32f446rctx.s"
         Core/Inc/apps_logic.h
         tests/unit/test_sensor_permille.c
+        tests/unit/test_clampdac.c
 )
 
 file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS

@@ -173,12 +173,7 @@ static void UpdateSensorRanges(void)
  *  OUTPUT LOGIC
  *
  */
-static uint32_t ClampDac(int32_t value)
-{
-  if (value < 0) return 0;
-  if (value > DAC_MAX_COUNTS) return DAC_MAX_COUNTS;
-  return (uint32_t)value;
-}
+
 
 
 /* Normalize each redundant sensor against its own calibrated endpoints. Use
