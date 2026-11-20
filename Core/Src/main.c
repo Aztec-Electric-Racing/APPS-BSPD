@@ -351,6 +351,11 @@ static void HandleConsoleCommand(const char* cmd)
   {
     // Read current ADC value and display it
     snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u, Brake=%u\r\n", apps1, apps2, brakeAdc);
+    snprintf(msg, sizeof(msg),
+                 "DMA: [%u, %u, %u] | live: [%u, %u, %u] | checked: [%u, %u]\r\n",
+                 adc_buf[0], adc_buf[1], adc_buf[2],
+                 apps1, apps2, brakeAdc,
+                 checkedApps1, checkedApps2);
     ConsoleSendString(msg);
   }
   else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
