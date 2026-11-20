@@ -48,7 +48,7 @@ typedef struct
 /* The APPS input divider passes approximately 72% of the sensor voltage.
  * Calibration values are kept in sensor-side counts; normalize ADC readings
  * before checking ranges and computing the APPS differential. */
-#define APPS_INPUT_DIVIDER_NUM  72U
+#define APPS_INPUT_DIVIDER_NUM  51U
 #define APPS_INPUT_DIVIDER_DEN  100U
 
 /* Allowed APPS1/APPS2 disagreement as a fraction of pedal travel (FSAE: 10%) */
@@ -58,12 +58,21 @@ typedef struct
 /* How often the console heartbeat line is printed when enabled */
 #define HEARTBEAT_PERIOD_MS     1000
 
-/* BRAKEREF was measured at 0.49 V released and 1.24 V engaged.
- * Switch at their midpoint, expressed as 12-bit ADC counts at 3.3 V full scale. */
-#define BRAKE_RELEASED_MV       490U
-#define BRAKE_ENGAGED_MV        1240U
-#define BRAKE_THRESHOLD_MV      ((BRAKE_RELEASED_MV + BRAKE_ENGAGED_MV) / 2U)
-#define BRAKE_ENGAGED_COUNTS    ((BRAKE_THRESHOLD_MV * ADC_MAX_COUNTS + 1650U) / 3300U)
+/* BRAKEREF is divided before reaching the ADC. Switch at the sensor-side
+ * midpoint, then convert through the divider to 12-bit ADC counts. */
+#define BRAKE_DIVIDER_NUM          72U
+#define BRAKE_DIVIDER_DEN          100U
+
+#define BRAKE_RELEASED_MV          490U
+#define BRAKE_ENGAGED_MV           1240U
+#define BRAKE_THRESHOLD_SENSOR_MV  ((BRAKE_RELEASED_MV + BRAKE_ENGAGED_MV) / 2U)
+
+#define BRAKE_THRESHOLD_ADC_MV \
+    ((BRAKE_THRESHOLD_SENSOR_MV * BRAKE_DIVIDER_NUM + \
+      (BRAKE_DIVIDER_DEN / 2U)) / BRAKE_DIVIDER_DEN)
+
+#define BRAKE_ENGAGED_COUNTS \
+    ((BRAKE_THRESHOLD_ADC_MV * ADC_MAX_COUNTS + 1650U) / 3300U)
 /* PA7 (APPS/BC_Fail) is the throttle/brake inhibit output: HIGH = OK/enabled, LOW = inhibit.
  * The board has a 10k pull-down (R3), so a Hi-Z pin also inhibits. PB1/PB5 are fan/pump PWM. */
 #define INHIBIT_GPIO_PORT       GPIOA
