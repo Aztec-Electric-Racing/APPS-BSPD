@@ -45,8 +45,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  /* Last 128K (sector 5, 0x08020000) is reserved for EEPROM emulation, see ee_config.h */
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 128K
+  /* Last 192K (sectors 4 and 5) are reserved for EEPROM emulation, see ee_config.h */
+  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 64K
 }
 
 /* Sections */

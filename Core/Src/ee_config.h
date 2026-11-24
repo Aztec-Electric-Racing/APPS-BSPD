@@ -1,7 +1,7 @@
 
 /*
  * @file        ee_config.h
- * @brief       EEPROM Emulation Library
+ * @brief Flash Calibration Storage Configuration //new brief
  * @author      Nima Askari
  * @version     4.0.0
  * @license     See the LICENSE file in the root folder.
@@ -43,17 +43,36 @@
 #define EE_PAGE_SECTOR_SIZE_128K          (1024 * 128)
 #define EE_PAGE_SECTOR_SIZE_256K          (1024 * 256)
 
-/* USER CODE BEGIN EE_CONFIGURATION */
+//NEW
+// Flash sectors reserved for calibration storage
+#define EE_STORAGE_SECTOR_A_NUMBER  4U
+#define EE_STORAGE_SECTOR_A_ADDRESS 0x08010000U
+#define EE_STORAGE_SECTOR_A_SIZE    EE_PAGE_SECTOR_SIZE_64K
 
-#define EE_MANUAL_CONFIG                  1
-#if (EE_MANUAL_CONFIG == 1)
-#define EE_SELECTED_PAGE_SECTOR_NUMBER    5
-#define EE_SELECTED_PAGE_SECTOR_SIZE      EE_PAGE_SECTOR_SIZE_128K
-#define EE_SELECTED_BANK                  FLASH_BANK_1
-#define EE_SELECTED_ADDRESS               0x08020000  /* Start of sector 5. Must match EE_SELECTED_PAGE_SECTOR_NUMBER */
-#endif
+#define EE_STORAGE_SECTOR_B_NUMBER  5U
+#define EE_STORAGE_SECTOR_B_ADDRESS 0x08020000U
+#define EE_STORAGE_SECTOR_B_SIZE    EE_PAGE_SECTOR_SIZE_128K
+
+
+
+
+
+//REMOVED
+/* USER CODE BEGIN EE_CONFIGURATION
+
+* #define EE_MANUAL_CONFIG                  1
+* #if (EE_MANUAL_CONFIG == 1)
+* #define EE_SELECTED_PAGE_SECTOR_NUMBER    5
+* #define EE_SELECTED_PAGE_SECTOR_SIZE      EE_PAGE_SECTOR_SIZE_128K
+* #define EE_SELECTED_BANK                  FLASH_BANK_1
+* #define EE_SELECTED_ADDRESS               0x08020000  // Start of sector 5. Must match EE_SELECTED_PAGE_SECTOR_NUMBER
+* #endif
+*/
+
+
 
 /* USER CODE END EE_CONFIGURATION */
+
 
 /*************************************************************************************************/
 /** End of File **/

@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "ee.h"
 #include "usbd_cdc_if.h"
 /* USER CODE END Includes */
@@ -95,7 +96,7 @@ static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
 /* USER CODE BEGIN PFP */
 static void LoadDefaultCalibration(void);
-static uint8_t CalibrationIsValid(void);
+static uint8_t CalibrationIsValid(const Storage_t *calibration);
 static void UpdateSensorRanges(void);
 static uint32_t ClampDac(int32_t value);
 static void HandleUsbCommand(const char* cmd);
@@ -113,10 +114,13 @@ static void LoadDefaultCalibration(void)
 }
 
 /* Erased flash reads as 0xFFFFFFFF, so this also catches a board that has never been calibrated */
-static uint8_t CalibrationIsValid(void)
+static uint8_t CalibrationIsValid(const Storage_t *calibration)
 {
-  return (ee.sens1Lower < ee.sens1Upper) && (ee.sens1Upper <= ADC_MAX_COUNTS) &&
-         (ee.sens2Lower < ee.sens2Upper) && (ee.sens2Upper <= ADC_MAX_COUNTS);
+  return (calibration != NULL) &&
+         (calibration->sens1Lower < calibration->sens1Upper) &&
+         (calibration->sens1Upper <= ADC_MAX_COUNTS) &&
+         (calibration->sens2Lower < calibration->sens2Upper) &&
+         (calibration->sens2Upper <= ADC_MAX_COUNTS);
 }
 
 static void UpdateSensorRanges(void)
@@ -138,7 +142,7 @@ static void SendStatusLine(const char* prefix)
   uint16_t s1 = apps1;
   uint16_t s2 = apps2;
   snprintf(msg, sizeof(msg),
-           "%s up %lus | APPS1=%u (%lumV) APPS2=%u (%lumV) | %s | DAC1=%lu (%lumV) DAC2=%lu (%lumV)\r\n",
+           "%s up %" PRIu32 "s | APPS1=%u (%" PRIu32 "mV) APPS2=%u (%" PRIu32 "mV) | %s | DAC1=%" PRIu32 " (%" PRIu32 "mV) DAC2=%" PRIu32 " (%" PRIu32 "mV)\r\n",
            prefix, HAL_GetTick() / 1000,
            s1, COUNTS_TO_MV(s1), s2, COUNTS_TO_MV(s2),
            appsFault ? "FAULT" : "OK",
@@ -165,6 +169,8 @@ static void HandleUsbCommand(const char* cmd)
                    "  GETSAVED        Show saved calibration\r\n"
                    "  SAVE LOWER      Save current pedal position as lower limit\r\n"
                    "  SAVE UPPER      Save current pedal position as upper limit\r\n"
+                   "  SAVELOWER       Legacy lower-save alias\r\n"
+                   "  SAVEUPPER       Legacy upper-save alias\r\n"
                    "  HEARTBEAT ON    Print STATUS every second (default)\r\n"
                    "  HEARTBEAT OFF   Stop the periodic STATUS line\r\n");
   }
@@ -187,44 +193,62 @@ static void HandleUsbCommand(const char* cmd)
     snprintf(msg, sizeof(msg), "APPS1=%u, APPS2=%u\r\n", apps1, apps2);
     CDC_SendString(msg);
   }
-  else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0)
+  else if (strcmp(cmd, "SAVE UPPER") == 0 || strcmp(cmd, "SAVE LOWER") == 0 ||
+           strcmp(cmd, "SAVEUPPER") == 0 || strcmp(cmd, "SAVELOWER") == 0)
   {
     // Store raw ADC counts, the same units the main loop compares against.
-    // Note: erasing the 128K sector stalls the CPU for ~1-2s, the DACs hold their last value meanwhile.
-    uint8_t upper = (strcmp(cmd, "SAVE UPPER") == 0);
-    Storage_t previous = ee;
+	  // Note: Normal saves append to Flash. When storage fills, a sector erase
+	  // is required and may temporarily stall CPU execution. DAC outputs retain
+	  // their last programmed values during this time.
+    uint8_t upper = (strcmp(cmd, "SAVE UPPER") == 0 ||
+                     strcmp(cmd, "SAVEUPPER") == 0);
+    uint16_t saveApps1 = apps1;
+    uint16_t saveApps2 = apps2;
+    Storage_t candidate = ee;
     if (upper)
     {
-      ee.sens1Upper = apps1;
-      ee.sens2Upper = apps2;
+      candidate.sens1Upper = saveApps1;
+      candidate.sens2Upper = saveApps2;
     }
     else
     {
-      ee.sens1Lower = apps1;
-      ee.sens2Lower = apps2;
+      candidate.sens1Lower = saveApps1;
+      candidate.sens2Lower = saveApps2;
     }
 
-    if (!CalibrationIsValid())
+    if (!CalibrationIsValid(&candidate))
     {
-      ee = previous;
       CDC_SendString("ERROR: lower must be below upper, calibration not saved.\r\n");
-    }
-    else if (!ee_write())
-    {
-      CDC_SendString("ERROR: flash write failed.\r\n");
     }
     else
     {
-      UpdateSensorRanges();
-      snprintf(msg, sizeof(msg), "SAVED %s1=%lu, %s2=%lu\r\n",
-               upper ? "Upper" : "Lower", upper ? ee.sens1Upper : ee.sens1Lower,
-               upper ? "Upper" : "Lower", upper ? ee.sens2Upper : ee.sens2Lower);
-      CDC_SendString(msg);
+      ee_write_status_t writeStatus =
+          ee_write_data(&candidate, sizeof(candidate));
+
+      if (writeStatus == EE_WRITE_FAILED)
+      {
+        CDC_SendString("ERROR: flash write failed. Active calibration unchanged.\r\n");
+      }
+      else
+      {
+        /* Publish the candidate to active RAM only after Flash commit succeeds. */
+        ee = candidate;
+        UpdateSensorRanges();
+        snprintf(msg, sizeof(msg), "SAVED %s1=%" PRIu32 ", %s2=%" PRIu32 "\r\n",
+                 upper ? "Upper" : "Lower", upper ? ee.sens1Upper : ee.sens1Lower,
+                 upper ? "Upper" : "Lower", upper ? ee.sens2Upper : ee.sens2Lower);
+        CDC_SendString(msg);
+
+        if (writeStatus == EE_WRITE_OK_CLEANUP_FAILED)
+        {
+          CDC_SendString("WARNING: calibration saved, but old-sector cleanup failed.\r\n");
+        }
+      }
     }
   }
   else if (strcmp(cmd, "GETSAVED") == 0)
   {
-    snprintf(msg, sizeof(msg), "Saved Upper1=%lu, Saved Upper2=%lu, Saved Lower1=%lu, Saved Lower2=%lu\r\n",
+    snprintf(msg, sizeof(msg), "Saved Upper1=%" PRIu32 ", Saved Upper2=%" PRIu32 ", Saved Lower1=%" PRIu32 ", Saved Lower2=%" PRIu32 "\r\n",
              ee.sens1Upper, ee.sens2Upper, ee.sens1Lower, ee.sens2Lower);
     CDC_SendString(msg);
   }
@@ -284,18 +308,36 @@ int main(void)
   {
     Error_Handler();
   }
-  ee_read();
-  if (!CalibrationIsValid())
+  ee_read_status_t readStatus = ee_read();
+  if (readStatus == EE_READ_NOT_INITIALIZED)
   {
-    LoadDefaultCalibration();
-    ee_write();
+      Error_Handler();
+  }
+  else if (readStatus == EE_READ_NO_VALID_RECORD)
+  {
+      LoadDefaultCalibration();
+
+      if (!CalibrationIsValid(&ee) ||
+          ee_write_data(&ee, sizeof(ee)) == EE_WRITE_FAILED)
+      {
+          Error_Handler();
+      }
+  }
+  else if (!CalibrationIsValid(&ee))
+  {
+      /* Defensive check: the storage layer should already reject this. */
+      Error_Handler();
+  }
+  else if (readStatus == EE_READ_VALID_LEGACY)
+  {
+      /* Migrate range-checked legacy data into a CRC-protected record. */
+      if (ee_write_data(&ee, sizeof(ee)) == EE_WRITE_FAILED)
+      {
+          Error_Handler();
+      }
   }
   UpdateSensorRanges();
 
-  /*IMPORTANT: Should probably move off of Emulated EEPROM to save memory life. I was reasearching
-   * and it seemed as if there was a way to write to flash as long as it was empty. Just have a bunch of
-   * indexed entries in the sector and only erase it and rewrite once it is full. Use the highest indexed value.
-   * Currently the EEPROM has to erase every time we write I believe even though we only use a small amount of the sector most likely */
   uint32_t lastHeartbeat = HAL_GetTick();
   /* USER CODE END 2 */
 
