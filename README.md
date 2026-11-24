@@ -45,7 +45,7 @@ We were having a few issues when attempting to flash the repo into the board, sp
 - **`sensAcceptibleDiff` was never defined:** it's now `SENS_ACCEPTABLE_DIFF = 0.10` (*ASSUMED 10% FSAE LIMIT*)
 	- ^^^ !!! ***Confirm with Zaina because this is assumed*** !!! ^^^
 - **`cmd` was never defined, and `CDC_SendString` didn't exist:** both are now implemented.
-- **Missing pieces:**  The missing `#include`s was added the `printf` format warnings (`%u` → `%lu` for `uint32_t`) was fixed
+- Missing #includes were added. uint32_t values are now printed portably using PRIu32 from <inttypes.h>.
 
 ### Found by Code Review:
 
@@ -54,7 +54,55 @@ We were having a few issues when attempting to flash the repo into the board, sp
 - The ADC only took one reading.
 - `SAVE UPPER` / `SAVE LOWER` always stored 0.
 - Calibration was reset on every boot.
-### Verification:
+
+
+## 💾 Flash Calibration Storage Conversion
+
+The `flash-conversion` branch replaces the original erase-before-every-save EEPROM behavior with append-only Flash calibration records.
+
+### Storage Layout
+
+- Application: Flash sectors 0–3, limited to 64 KB
+- Storage sector A: sector 4 at `0x08010000`, 64 KB
+- Storage sector B: sector 5 at `0x08020000`, 128 KB
+
+The linker prevents application code from overlapping either storage sector.
+
+### Record Format
+
+Each calibration save creates a fixed 40-byte record containing:
+
+- Record identifier
+- Format version
+- Sequence number
+- Four APPS calibration values
+- Reserved field
+- CRC-32
+- Commit marker
+
+The commit marker is written last. Incomplete or interrupted writes are therefore rejected during startup.
+
+### Storage Behavior
+
+- Normal saves append without erasing the active sector.
+- Both sectors are scanned at startup.
+- The newest valid committed record is loaded.
+- Corrupted, incomplete, unsupported, and invalid records are ignored.
+- Active RAM calibration is updated only after a successful Flash commit.
+- Valid legacy sector-5 calibration can be migrated into the new record format.
+- When the active sector fills, the alternate sector is erased and verified.
+- The previous calibration and requested calibration are committed in the alternate sector before the old sector is erased.
+- A failed old-sector cleanup is reported separately from a failed calibration save.
+
+### Current Status
+
+- Debug build passes.
+- Release build passes.
+- Hardware bench testing is pending.
+- The final `main.c` baseline must be confirmed before merging.
+- This branch should not be merged until review and bench testing are complete.
+
+### USB-Fix Baseline Verification:
 
 The board now prints over the USB as soon as the port is opened. It was flashed and tested over COM3:
 
@@ -72,6 +120,7 @@ USB serial OK. Type HELP for commands.
 [USB OK] up 12s | APPS1=68 (54mV) APPS2=75 (60mV) | FAULT | DAC1=0 (0mV) DAC2=0 (0mV)
 [USB OK] up 13s | APPS1=74 (59mV) APPS2=71 (57mV) | FAULT | DAC1=0 (0mV) DAC2=0 (0mV)
 ```
+> These results verify the earlier USB fix. They do not constitute hardware verification of the Flash-storage conversion.
 ## 📝 TODO
 
 > From Jack Varagas
