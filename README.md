@@ -1,6 +1,6 @@
 
 
-# 🔌USB-Fix (WORK IN PROGRESS)
+# 🔌 USB-Fix and Flash Conversion (WORK IN PROGRESS)
 
 > *Madam Team Lead (Zaina) if i got anything wrong, fix everything pls.*
 
@@ -45,11 +45,10 @@ We were having a few issues when attempting to flash the repo into the board, sp
 - **`sensAcceptibleDiff` was never defined:** it's now `SENS_ACCEPTABLE_DIFF = 0.10` (*ASSUMED 10% FSAE LIMIT*)
 	- ^^^ !!! ***Confirm with Zaina because this is assumed*** !!! ^^^
 - **`cmd` was never defined, and `CDC_SendString` didn't exist:** both are now implemented.
-- Missing #includes were added. uint32_t values are now printed portably using PRIu32 from <inttypes.h>.
+- Missing `#include`s were added. `uint32_t` values are now printed portably using `PRIu32` from `<inttypes.h>`.
 
 ### Found by Code Review:
 
-- The EEPROM wrote to the code's own flash address.
 - The DAC outputs were never started.
 - The ADC only took one reading.
 - `SAVE UPPER` / `SAVE LOWER` always stored 0.
@@ -102,15 +101,15 @@ The commit marker is written last. Incomplete or interrupted writes are therefor
 - The final `main.c` baseline must be confirmed before merging.
 - This branch should not be merged until review and bench testing are complete.
 
-### USB-Fix Baseline Verification:
+## ✅ USB-Fix Baseline Verification:
 
 The board now prints over the USB as soon as the port is opened. It was flashed and tested over COM3:
 
 | Sent           | Reply from Board                                                                 |
 | -------------- | -------------------------------------------------------------------------------- |
-| ```PING```     | ```PONG```                                                                       |
-| ```READ```     | ```APPS1=70, APPS2=72```                                                         |
-| ```GETSAVED``` | ```Saved Upper1=2749, Saved Upper2=1914, Saved Lower1=1914, Saved Lower2=1079``` |
+| `PING`     | `PONG`                                                                       |
+| `READ`     | `APPS1=70, APPS2=72`                                                         |
+| `GETSAVED` | `Saved Upper1=2749, Saved Upper2=1914, Saved Lower1=1914, Saved Lower2=1079` |
 
 > No sensors were connected.
 
@@ -121,6 +120,7 @@ USB serial OK. Type HELP for commands.
 [USB OK] up 13s | APPS1=74 (59mV) APPS2=71 (57mV) | FAULT | DAC1=0 (0mV) DAC2=0 (0mV)
 ```
 > These results verify the earlier USB fix. They do not constitute hardware verification of the Flash-storage conversion.
+
 ## 📝 TODO
 
 > From Jack Varagas
